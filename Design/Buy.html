@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Buy.css" type="text/css" media="screen" charset="utf-8"/>
+    <title>Vroom Ville</title>
+</head>
+
+<body>
+    <header>
+        <div class="header-title">
+            <a>Vroom Ville</a>
+          </div>
+        <div class="header-links">
+            <a href="index.html">Главная</a>
+            <a href="Buy.html">Объявления</a>
+            <a href="#">Аукционы</a>
+            <a href="AboutUs.html">О нас</a>
+            <a href="#">Профиль</a>
+            <a href="SignIn.html">Вход</a>
+            <a href="SignUp.html">Регистрация</a>
+        </div>
+    </header>
+
+    <div class="container-name">
+        <a><b>Купить автомобиль</b></a>
+    </div>
+
+    <div class="filter">
+
+        <div class="dropdown" onclick="toggleDropdown()" id="dropdownContainer">
+            <input type="text" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
+            <div id="myDropdown" class="dropdown-content">
+                <div class="pick">
+                    <label>
+                        <input type="radio" name="brandSelection" value="choose" checked> Выбрать
+                    </label>
+                    <label>
+                        <input type="radio" name="brandSelection" value="exclude"> Исключить
+                    </label>
+                </div>
+                <a href="#" class="car-brand" onclick="clearSelection()">Любая</a>
+                <a href="#" class="car-brand" data-brand="BMW" onclick="selectBrand(this)">BMW</a>
+                <a href="#" class="car-brand" data-brand="Mercedes" onclick="selectBrand(this)">Mercedes</a>
+                <a href="#" class="car-brand" data-brand="Toyota" onclick="selectBrand(this)">Toyota</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Honda</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Mazda</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Audi</a>
+        
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-image">
+                <img src="кчау.jpg" alt="Car Image">
+            </div>
+            <div class="card-info">
+                <h2>Марка и модель автомобиля</h2>
+                <p>Год выпуска: 2022</p>
+                <p>Цена: $30,000</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-image">
+                <img src="кчау.jpg" alt="Car Image">
+            </div>
+            <div class="card-info">
+                <h2>Марка и модель автомобиля</h2>
+                <p>Год выпуска: 2022</p>
+                <p>Цена: $30,000</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-image">
+                <img src="кчау.jpg" alt="Car Image">
+            </div>
+            <div class="card-info">
+                <h2>Марка и модель автомобиля</h2>
+                <p>Год выпуска: 2022</p>
+                <p>Цена: $30,000</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <footer>
+        <a> 2023 Vroom Ville. Все права защищены.</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

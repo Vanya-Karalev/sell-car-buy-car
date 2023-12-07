@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="SignIn.css" type="text/css" media="screen" charset="utf-8"/>
+    <title>Vroom Ville</title>
+  </head>
+
+  <body>
+    <header>
+        <div class="header-title">
+            <a>Vroom Ville</a>
+          </div>
+        <div class="header-links">
+            <a href="index.html">Главная</a>
+            <a href="Buy.html">Объявления</a>
+            <a href="#">Аукционы</a>
+            <a href="AboutUs.html">О нас</a>
+            <a href="#">Профиль</a>
+            <a href="SignIn.html">Вход</a>
+            <a href="SignUp.html">Регистрация</a>
+        </div>
+    </header>
+
+    <div class="container">
+      <div class="login-page">
+        <h1 class="login-page__header">Sign In</h1>
+        <form class="login-form">
+          <label class="form__username">Email:</label>
+          <input
+            class="form__input-username"
+            type="text"
+            placeholder="email"
+            id="username"
+          />
+          <label class="form__password">Password:</label>
+          <input
+            class="form__input-password"
+            type="password"
+            placeholder="password"
+            id="password"
+          />
+          <button type="button" class="form__signin" id="submitData">
+            Sign In
+          </button>
+        </form>
+        <p class="message">
+          Not registered? <a href="SignUp.html">Create an account</a>
+        </p>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="js/SignIn.js"></script>
+</html>
