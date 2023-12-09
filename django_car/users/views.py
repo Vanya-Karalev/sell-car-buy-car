@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
+from cars.models import Brand
 
 
 class SignUpView(CreateView):
@@ -57,5 +58,11 @@ def LogoutPage(request):
     return redirect('index')
 
 
-def profile(request):
-    return render(request, 'profile.html')
+def create_ad(request):
+    brands = Brand.objects.all()
+    context = {'brands': brands}
+    return render(request, 'createad.html', context)
+
+
+# def profile(request):
+#     return render(request, 'profile.html')

@@ -7,11 +7,6 @@
 
 {% block content %}
     <body>
-        <p>username: {{ request.user.username }}</p>
-        <p>first name: {{ request.user.first_name }}</p>
-        <p>last name: {{ request.user.last_name }}</p>
-        <p>phone: {{ request.user.phone }}</p>
-        <p>Email: {{ request.user.email }}</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'createad.css' %}"/>
+    <script src="{% static 'createad.js' %}"></script>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+        <div class="dropdown_model" onclick="toggleDropdown()" id="dropdownContainer">
+            <input type="text" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
+            <div id="myDropdown" class="dropdown-content">
+                {% for brand in brands %}
+                    <a href="#" class="car-brand" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+{% endblock content %}
