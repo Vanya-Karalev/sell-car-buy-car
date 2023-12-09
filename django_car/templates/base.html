@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'base.css' %}" type="text/css" media="screen" charset="utf-8"/>
+    <script src="{% static 'base.js' %}"></script>
     {% block styles%}
     {% endblock styles %}
     <title>Vroom Ville</title>
@@ -26,8 +27,22 @@
                 <a href="{% url 'signin' %}">Вход</a>
                 <a href="{% url 'signup' %}">Регистрация</a>
             {% else %}
-                <a>Профиль</a>
-                <a href="{% url 'logout' %}">Выйти</a>
+{#                <a href="{% url 'profile' %}">Профиль</a>#}
+                <div class="dropdown" id="drop-down">
+                    <span>Профиль </span>
+                    <label>
+                    <input type="checkbox">
+                    <ul>
+                        <a style="color: black; font-weight: 900; font-size: 20px; display: block; padding: 6px 20px; white-space: nowrap; min-width: 100px;">{{ request.user.username }}</a>
+                        <li val="Personal">Мои объявления</li>
+                        <li val="Personal">Избранные объявления</li>
+                        <li val="Personal">Разместить объявление</li>
+                        <li val="Personal">Создать аукцион</li>
+                        <li val="Personal"><a href="{% url 'profile' %}" style="color: black">Настройки аккаунта</a></li>
+                        <li val="Exit"><a href="{% url 'logout' %}" style="color: red">Выйти</a></li>
+                    </ul>
+                    </label>
+                </div>
             {% endif %}
         </div>
     </header>

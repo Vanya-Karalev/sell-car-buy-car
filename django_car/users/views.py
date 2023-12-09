@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
-from users.forms import CustomUserCreationForm
+from users.forms import CustomUserCreationForm, CustomUserChangeForm
 
 
 class SignUpView(CreateView):
@@ -19,6 +19,20 @@ class SignUpView(CreateView):
             return redirect('index')
         else:
             return render(request, self.template_name, {'form', form})
+
+
+class ProfileView(UpdateView):
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy('index')
+    template_name = 'profile.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        user = form.save()
+        # You can add any additional logic here if needed
+        return super().form_valid(form)
 
 
 def LoginPage(request):
@@ -41,3 +55,7 @@ def LogoutPage(request):
     """Logout function"""
     logout(request)
     return redirect('index')
+
+
+def profile(request):
+    return render(request, 'profile.html')
