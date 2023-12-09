@@ -23,11 +23,11 @@
             <a>Аукционы</a>
             <a>О нас</a>
             {% if not request.user.is_authenticated %}
-                <a>Вход</a>
+                <a href="{% url 'signin' %}">Вход</a>
                 <a href="{% url 'signup' %}">Регистрация</a>
             {% else %}
                 <a>Профиль</a>
-                <a>Выйти</a>
+                <a href="{% url 'logout' %}">Выйти</a>
             {% endif %}
         </div>
     </header>

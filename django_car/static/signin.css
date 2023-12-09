@@ -1,0 +1,74 @@
+body {
+    background-image: url('login.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    border-radius: 10px;
+    background-color: white;
+    margin: 150px auto;
+    padding: 25px;
+    max-width: 370px;
+    width: 100%;
+}
+
+.login-page__header {
+    text-align: center;
+    padding-top: 5px;
+}
+
+.login-form {
+    padding-top: 25px;
+    padding-bottom: 15px;
+}
+
+.form__username {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.form__input-username {
+    display: flex;
+    width: 96.5%;
+    border: 1px solid rgb(128, 128, 128);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 7px;
+}
+
+.form__password {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.form__input-password {
+    display: flex;
+    width: 96.5%;
+    border: 1px solid rgb(128, 128, 128);
+    border-radius: 5px;
+    padding: 7px;
+}
+
+.form__signin {
+    background-color: black;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.message {
+    text-align: center;
+    font-size: 15px;
+}
+
+a {
+    text-decoration: none;
+}

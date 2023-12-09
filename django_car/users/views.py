@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
+from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm
 
 
@@ -19,3 +19,25 @@ class SignUpView(CreateView):
             return redirect('index')
         else:
             return render(request, self.template_name, {'form', form})
+
+
+def LoginPage(request):
+    """Login function"""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+
+    context = {}
+    return render(request, 'signin.html', context)
+
+
+def LogoutPage(request):
+    """Logout function"""
+    logout(request)
+    return redirect('index')

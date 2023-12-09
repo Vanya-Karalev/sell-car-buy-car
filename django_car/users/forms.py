@@ -7,5 +7,4 @@ from users.models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        # fields = ('username', 'email', 'first_name', 'Phone', 'password')
         fields = ('username', 'email', 'first_name', 'phone')

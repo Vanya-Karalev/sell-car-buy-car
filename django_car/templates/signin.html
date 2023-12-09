@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'signin.css' %}"/>
+{% endblock styles %}
+
+{% block content %}
+  <body>
+    <div class="container">
+      <div class="login-page">
+        <h1 class="login-page__header">Sign In</h1>
+        <form method="POST" class="login-form">
+            {%csrf_token%}
+          <label class="form__username">Username:</label>
+          <input
+            class="form__input-username"
+            type="text"
+            placeholder="username"
+            id="username"
+            name="username" required
+          />
+          <label class="form__password">Password:</label>
+          <input
+            class="form__input-password"
+            type="password"
+            placeholder="password"
+            id="password"
+            name="password" required
+          />
+          <button type="submit" class="form__signin" id="submitData">
+            Sign In
+          </button>
+        </form>
+          {%if messages%}
+                {%for message in messages%}
+                    <div class="alert alert-{{message.tags}}">
+                         {{message}}
+                    </div>
+                {%endfor%}
+            {%endif%}
+        <p class="message">
+          Not registered? <a href="{% url 'signup' %}">Create an account</a>
+        </p>
+      </div>
+    </div>
+  </body>
+{% endblock content %}
