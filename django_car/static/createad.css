@@ -14,7 +14,7 @@
     border-radius: 8px;
 }
 
-.dropdown_model {
+.dropdown_brand, .dropdown_model {
     position: relative;
     display: inline-block;
     padding: 15px;
@@ -48,11 +48,11 @@
     background-color: #f1f1f1;
 }
 
-.dropdown_model.active .dropdown-content {
+.dropdown_brand.active .dropdown-content, .dropdown_model.active .dropdown-content{
     display: block;
 }
 
-.dropdown_model input[type="text"] {
+.dropdown_brand input[type="text"], .dropdown_model input[type="text"] {
     width: 230px;
     background-color: #f1f1f1;
     color: black;

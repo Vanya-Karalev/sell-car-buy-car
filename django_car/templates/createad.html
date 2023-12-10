@@ -8,13 +8,28 @@
 
 {% block content %}
     <body>
-        <div class="dropdown_model" onclick="toggleDropdown()" id="dropdownContainer">
+        <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
             <input type="text" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
-            <div id="myDropdown" class="dropdown-content">
+            <div class="dropdown-content">
                 {% for brand in brands %}
-                    <a href="#" class="car-brand" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
+                    <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
                 {% endfor %}
             </div>
         </div>
+
+        <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
+            <input type="text" placeholder="Модель" class="dropbtn" id="selectedModelBtn" oninput="filterModelFunction(this.value)">
+            <div class="dropdown-content" id="modelDropdown">
+{#                    {% for model in models %}#}
+{#                        {% if '223d7451-90b1-43d1-a1fa-1ab285064124'|stringformat:"s" == model.brand_id.id|stringformat:"s" %}#}
+{#                            <a class="car-model" data-model="{{ model.name }}" onclick="selectModel(this)">{{ model.name }}</a>#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+                {% for model in models %}
+                    <a class="car-model" data-brand-id="{{ model.brand_id.id }}" data-model="{{ model.name }}" onclick="selectModel(this)">{{ model.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
     </body>
 {% endblock content %}
