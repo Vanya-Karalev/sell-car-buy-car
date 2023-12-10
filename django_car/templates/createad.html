@@ -8,43 +8,160 @@
 
 {% block content %}
     <body>
-<form method="post" action="{% url 'createad' %}">
-    {% csrf_token %}
+        <form method="post" action="{% url 'createad' %}">
+            {% csrf_token %}
 
-    <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
-        <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
-        <div class="dropdown-content">
-            {% for brand in brands %}
-                <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
-            {% endfor %}
-        </div>
-    </div>
+            <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
+                <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
+                <div class="dropdown-content">
+                    {% for brand in brands %}
+                        <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
 
-    <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
-        <input type="text" name="selected_model_name" placeholder="Модель" class="dropbtn" id="selectedModelBtn" oninput="filterModelFunction(this.value)">
-        <div class="dropdown-content" id="modelDropdown">
-            {% for model in models %}
-                <a class="car-model" data-brand-id="{{ model.brand_id.id }}" data-model="{{ model.name }}" onclick="selectModel(this)">{{ model.name }}</a>
-            {% endfor %}
-        </div>
-    </div>
+            <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
+                <input type="text" name="selected_model_name" placeholder="Модель" class="dropbtn" id="selectedModelBtn" oninput="filterModelFunction(this.value)" disabled>
+                <div class="dropdown-content" id="modelDropdown" data-brand-id="">
+                    {% for model in models %}
+                        <a class="car-model" data-brand-id="{{ model.brand.id }}" data-model="{{ model.name }}" onclick="selectModel(this)">{{ model.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
 
-    <a>Пробег</a>
-    <input type="text" name="mileage" placeholder="км" id="mileage">
+            <div class="container-name">
+                <a>Пробег:</a>
+                <input type="text" name="mileage" placeholder="пробег" id="mileage">
+                <a>км.</a>
+            </div>
 
-    <a>Choose a color:</a>
-    <select name="color" id="color">
-        <option>White</option>
-        <option>Black</option>
-        <option>Blue</option>
-        <option>Yellow</option>
-    </select>
+            <div class="container-name">
+                <a>Цвет:</a>
+                <select name="color" id="color">
+                    <option>Белый</option>
+                    <option>Черный</option>
+                    <option>Голубой</option>
+                    <option>Желтый</option>
+                </select>
+            </div>
 
-    <button type="submit">
-        создать объявление
-    </button>
-</form>
+            <div class="container-name">
+                <a>Тип кузова:</a>
+                <select name="bodytype" id="bodytype">
+                    <option>Хэтчбэк (3 дв.)</option>
+                    <option>Хэтчбэк (5 дв.)</option>
+                    <option>Седан</option>
+                    <option>Купе</option>
+                    <option>Универсал</option>
+                    <option>Внедорожник</option>
+                    <option>Пикап</option>
+                    <option>Кроссовер</option>
+                    <option>Кабриолет</option>
+                    <option>Минивен</option>
+                    <option>Родстер</option>
+                    <option>Лимузин</option>
+                </select>
+            </div>
+
+            <div class="container-name">
+                <a>VIN номер:</a>
+                <input type="text" name="vin" placeholder="VIN" id="vin">
+            </div>
+
+            <div class="container-name">
+                <h2>Двигатель:</h2>
+                <a>Тип двигателя:</a>
+                <select name="enginetype" id="enginetype">
+                    <option>Бензин</option>
+                    <option>Дизель</option>
+                    <option>Электрический</option>
+                    <option>Гибрид</option>
+                </select>
+            </div>
+
+            <div class="container-name">
+                <a>Лошадиные силы:</a>
+                <input type="number" name="horsepower" placeholder="лошадиные силы" id="horsepower">
+            </div>
+
+            <div class="container-name">
+                <a>Объем двигателя:</a>
+                <input type="number" name="capacity" placeholder="объем двигателя" id="capacity">
+            </div>
+
+            <div class="container-name">
+                <a>Крутящий момент:</a>
+                <input type="number" name="torque" placeholder="крутящий момент" id="torque">
+            </div>
+
+            <div class="container-name">
+                <a>Расход топлива на 100км:</a>
+                <input type="number" name="fuelconsuption" placeholder="расход топлива" id="fuelconsuption">
+            </div>
+
+            <div class="container-name">
+                <a>Год выпуска:</a>
+                <input type="text" name="year" placeholder="год" id="mileage">
+            </div>
+
+            <div class="container-name">
+                <h2>Подвеска:</h2>
+                <a>Тип подвески:</a>
+                <select name="suspensiontype" id="suspensiontype">
+                    <option>Рессорная подвеска</option>
+                    <option>Торсионная подвеска</option>
+                    <option>Подвеска с продольными рычагами</option>
+                    <option>Зависимая подвеска</option>
+                    <option>Независимая подвеска</option>
+                    <option>Двухрычажная подвеска</option>
+                    <option>Подвеска типа Макферсон</option>
+                    <option>Пневматическая подвеска</option>
+                    <option>Многорычажная подвеска</option>
+                </select>
+            </div>
+
+            <div class="container-name">
+                <a>Клиренс:</a>
+                <input type="number" name="clearance" placeholder="клиренс" id="clearance">
+                <a>см.</a>
+            </div>
+
+            <div class="container-name">
+                <h2>Коробка передач:</h2>
+                <a>Тип коробки передач:</a>
+                <select name="gearboxtype" id="gearboxtype">
+                    <option>Автоматическая</option>
+                    <option>Механическая</option>
+                    <option>Вариатор</option>
+                    <option>Роботизированная</option>
+                </select>
+            </div>
+
+            <div class="container-name">
+                <a>Число передач:</a>
+                <input type="number" name="gearnumber" placeholder="число передач" id="gearnumber">
+            </div>
+
+            <div class="container-name">
+                <a>Цена:</a>
+                <input type="number" name="price" placeholder="цена" id="price">
+            </div>
+
+            <div class="container-name">
+                <a>Описание:</a>
+                <textarea name="description" placeholder="описание" id="description"></textarea>
+            </div>
 
 
+        {#    <label for="avatar">Choose a ads pictures:</label>#}
+        {#    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" multiple/>#}
+
+            <div class="container-name">
+                <button type="submit">
+                    создать объявление
+                </button>
+            </div>
+
+        </form>
     </body>
 {% endblock content %}

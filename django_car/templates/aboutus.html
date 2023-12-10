@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'aboutus.css' %}"/>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+
+        <div class="container-name">
+            <a><b>О нас</b></a>
+        </div>
+
+        <div class="container">
+            <div class="left">
+                <a>
+                    <b>
+                        Захотел — купил, <br>
+                        захотел — продал
+                    </b>
+                </a>
+                <br>
+                <br>
+                <a>
+                    Vroom Ville помогает купить или продать машину. <br>
+                    Это не просто сайт, где каждый может найти или разместить
+                    объявление (хотя, конечно, каждый может), задача Vroom Ville —
+                    оградить человека от неприятностей, связанных с куплей-
+                    продажей автомобиля.
+                </a>
+            </div>
+            <div class="right">
+                <div class="img">
+
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock content %}

@@ -1,0 +1,59 @@
+.container-name {
+    margin: 20px 0px 20px 80px;
+    font-size: 20px;
+}
+
+.container {
+    margin-left: 60px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    display: flex;
+    width: 1400px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    width: 60%;
+    overflow: hidden;
+}
+
+.image {
+    width: 100%;
+    height: 0;
+    padding-top: 75%;
+    position: relative;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Изменено значение на 'contain' */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.card-info {
+    padding: 20px;
+    width: 40%;
+    box-sizing: border-box;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 8px;
+}
+
+.large-image {
+    width: 85%;
+}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'buy.css' %}"/>
+    <script src="{% static 'buy.js' %}"></script>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+
+    <div class="container-name">
+        <a><b>Купить автомобиль</b></a>
+    </div>
+
+    <div class="filter">
+
+        <div class="dropdown" onclick="toggleDropdown()" id="dropdownContainer">
+            <input type="text" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
+            <div id="myDropdown" class="dropdown-content">
+                <div class="pick">
+                    <label>
+                        <input type="radio" name="brandSelection" value="choose" checked> Выбрать
+                    </label>
+                    <label>
+                        <input type="radio" name="brandSelection" value="exclude"> Исключить
+                    </label>
+                </div>
+                <a href="#" class="car-brand" onclick="clearSelection()">Любая</a>
+                <a href="#" class="car-brand" data-brand="BMW" onclick="selectBrand(this)">BMW</a>
+                <a href="#" class="car-brand" data-brand="Mercedes" onclick="selectBrand(this)">Mercedes</a>
+                <a href="#" class="car-brand" data-brand="Toyota" onclick="selectBrand(this)">Toyota</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Honda</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Mazda</a>
+                <a href="#" class="car-brand" data-brand="Honda" onclick="selectBrand(this)">Audi</a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        {% for ad in ads %}
+            <div class="card">
+                <div class="card-image">
+                    <img src="{% static 'кчау.jpg' %}" alt="Car Image">
+                </div>
+                <div class="card-info">
+                    <h2></h2>
+                    <p>Год выпуска: {{ ad.car.year }} </p>
+                    <p>Цена: $30,000</p>
+                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+{% endblock content %}

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-07ll_mqgt#dhcbj28y-k2d$1=3mf7ks6zj9*7kiqr$4wm2&ih8'
+SECRET_KEY = 'django-insecure-*)mhp&ehhmi5&piguyp)n246pli-e$+^$p0h5vvw0(mm4fso&d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'django_car.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_cars',
+        'NAME': 'sellcars',
         'USER': 'postgres',
         'PASSWORD': '1212',
         'HOST': 'localhost',

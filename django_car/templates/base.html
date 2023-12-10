@@ -20,9 +20,9 @@
           </div>
         <div class="header-links">
             <a href="{% url 'index' %}">Главная</a>
-            <a>Объявления</a>
+            <a href="{% url 'buycar' %}">Объявления</a>
             <a>Аукционы</a>
-            <a>О нас</a>
+            <a href="{% url 'aboutus' %}">О нас</a>
             {% if not request.user.is_authenticated %}
                 <a href="{% url 'signin' %}">Вход</a>
                 <a href="{% url 'signup' %}">Регистрация</a>

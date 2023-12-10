@@ -23,9 +23,23 @@ function selectBrand(element) {
     var selectedBrandBtn = document.getElementById("selectedBrandBtn");
     selectedBrandBtn.value = element.getAttribute("data-brand");
     selectBrandId = element.getAttribute("data-brand-id");
+
+    // Update the data-brand-id attribute of the model dropdown
+    var modelDropdown = document.getElementById("modelDropdown");
+    modelDropdown.setAttribute("data-brand-id", selectBrandId);
+
+    // Enable the model dropdown
+    var selectedModelBtn = document.getElementById("selectedModelBtn");
+    selectedModelBtn.disabled = false;
+
+    // Clear the selected model
+    selectedModelBtn.value = "";
+
     filterModels(); // Call a function to filter models when a brand is selected
     dropdown.classList.remove('active');
 }
+
+
 
 document.addEventListener('click', function(event) {
     var dropdownContainer = document.getElementById('dropdownContainer');
@@ -55,31 +69,46 @@ function filterModels() {
 function toggleModelDropdown() {
     if (!selectBrandId) {
         return;
-    }
-    else {
+    } else {
         var dropdown = document.querySelector('.dropdown_model');
         dropdown.classList.toggle('active');
+        filterModels();
     }
 }
 
+
 function filterModelFunction() {
-    var input, filter, a, i;
-    input = document.getElementById("selectedModelBtn");
-    filter = input.value.toUpperCase();
-    a = document.getElementsByClassName("car-model");
-    for (i = 0; i < a.length; i++) {
-        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
-        }
+     if (!selectBrandId) {
+        return;
     }
+    else {
+         var modelDropdown = document.getElementById("modelDropdown");
+         modelDropdown.setAttribute("data-brand-id", selectBrandId);
+         filterModels(); // Call a function to filter models when a brand is selected
+         dropdown.classList.remove('active');
+         var input, filter, a, i;
+         input = document.getElementById("selectedModelBtn");
+         filter = input.value.toUpperCase();
+         a = document.getElementsByClassName("car-model");
+         for (i = 0; i < a.length; i++) {
+             if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                 a[i].style.display = "";
+             } else {
+                 a[i].style.display = "none";
+             }
+         }
+     }
 }
 
 function selectModel(element) {
-    var selectedBrandBtn = document.getElementById("selectedModelBtn");
-    selectedBrandBtn.value = element.getAttribute("data-model");
-    dropdown.classList.remove('active');
+     if (!selectBrandId) {
+        return;
+    }
+    else {
+         var selectedBrandBtn = document.getElementById("selectedModelBtn");
+         selectedBrandBtn.value = element.getAttribute("data-model");
+         dropdown.classList.remove('active');
+     }
 }
 
 document.addEventListener('click', function(event) {
