@@ -60,11 +60,21 @@ def LogoutPage(request):
 
 
 def create_ad(request):
+    if request.method == 'POST':
+        brand_id = request.POST.get('selected_brand_name')
+        model_name = request.POST.get('selected_model_name')
+        mileage = request.POST.get('mileage')
+        color = request.POST.get('color')
+
+        print("Brand Name:", brand_id)
+        print("Model Name:", model_name)
+        print("Mileage:", mileage)
+        print("Color:", color)
+        return redirect('index')
     brands = Brand.objects.all()
     models = Model.objects.all()
     context = {'brands': brands,
-               'models': models,
-               'brandid': ''}
+               'models': models}
     return render(request, 'createad.html', context)
 
 
