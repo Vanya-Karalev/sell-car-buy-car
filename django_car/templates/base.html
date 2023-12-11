@@ -34,7 +34,7 @@
                     <input type="checkbox">
                     <ul>
                         <a style="color: black; font-weight: 900; font-size: 20px; display: block; padding: 6px 20px; white-space: nowrap; min-width: 100px;">{{ request.user.username }}</a>
-                        <li val="Personal">Мои объявления</li>
+                        <li val="Personal"><a href="{% url 'myads' %}" style="color: black">Мои объявления</a></li>
                         <li val="Personal">Избранные объявления</li>
                         <li val="Personal"><a href="{% url 'createad' %}" style="color: black">Разместить объявление</a></li>
                         <li val="Personal">Создать аукцион</li>

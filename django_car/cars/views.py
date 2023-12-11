@@ -8,7 +8,9 @@ def get_cars(request):
 
 def buy_cars(request):
     ads = Ad.objects.all()
-    context = {'ads': ads}
+    brands = Brand.objects.all()
+    context = {'ads': ads,
+               'brands': brands}
     return render(request, 'buy.html', context)
 
 

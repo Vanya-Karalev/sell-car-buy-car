@@ -120,5 +120,5 @@ def create_ad(request):
     return render(request, 'createad.html', context)
 
 
-# def profile(request):
-#     return render(request, 'profile.html')
+def my_ads(request):
+    return render(request, 'myads.html')

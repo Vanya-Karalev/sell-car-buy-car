@@ -14,8 +14,7 @@
     border-radius: 8px;
 }
 
-.dropdown {
-    position: relative;
+.dropdown_brand, .dropdown_model {
     display: inline-block;
     padding: 15px;
 }
@@ -31,7 +30,6 @@
     z-index: 1;
     border-radius: 5px;
     overflow: scroll;
-    padding-top: 15px;
 }
 
 .dropdown-content label {
@@ -49,11 +47,11 @@
     background-color: #f1f1f1;
 }
 
-.dropdown.active .dropdown-content {
+.dropdown_brand.active .dropdown-content, .dropdown_model.active .dropdown-content{
     display: block;
 }
 
-.dropdown input[type="text"] {
+.dropdown_brand input[type="text"], .dropdown_model input[type="text"] {
     width: 230px;
     background-color: #f1f1f1;
     color: black;

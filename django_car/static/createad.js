@@ -39,8 +39,6 @@ function selectBrand(element) {
     dropdown.classList.remove('active');
 }
 
-
-
 document.addEventListener('click', function(event) {
     var dropdownContainer = document.getElementById('dropdownContainer');
     if (!dropdownContainer.contains(event.target)) {
@@ -61,6 +59,7 @@ function filterModels() {
             models[i].style.display = "none";
         } else {
             models[i].style.display = "";
+            toggleModelDropdown()
         }
     }
 }
@@ -78,37 +77,24 @@ function toggleModelDropdown() {
 
 
 function filterModelFunction() {
-     if (!selectBrandId) {
-        return;
+    var input, filter, a, i;
+    input = document.getElementById("selectedModelBtn");
+    filter = input.value.toUpperCase();
+    a = document.getElementsByClassName("car-model");
+    for (i = 0; i < a.length; i++) {
+        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
     }
-    else {
-         var modelDropdown = document.getElementById("modelDropdown");
-         modelDropdown.setAttribute("data-brand-id", selectBrandId);
-         filterModels(); // Call a function to filter models when a brand is selected
-         dropdown.classList.remove('active');
-         var input, filter, a, i;
-         input = document.getElementById("selectedModelBtn");
-         filter = input.value.toUpperCase();
-         a = document.getElementsByClassName("car-model");
-         for (i = 0; i < a.length; i++) {
-             if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-                 a[i].style.display = "";
-             } else {
-                 a[i].style.display = "none";
-             }
-         }
-     }
+    filterModels();
 }
 
 function selectModel(element) {
-     if (!selectBrandId) {
-        return;
-    }
-    else {
-         var selectedBrandBtn = document.getElementById("selectedModelBtn");
-         selectedBrandBtn.value = element.getAttribute("data-model");
-         dropdown.classList.remove('active');
-     }
+     var selectedBrandBtn = document.getElementById("selectedModelBtn");
+     selectedBrandBtn.value = element.getAttribute("data-model");
+     dropdown.classList.remove('active');
 }
 
 document.addEventListener('click', function(event) {
