@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
 from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad
 from users.models import CustomUser
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
 
@@ -13,15 +14,10 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('index')
     template_name = 'signup.html'
 
-    def post(self, request, *args, **kwargs):
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-
-            return redirect('index')
-        else:
-            return render(request, self.template_name, {'form', form})
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
 
 
 class ProfileView(UpdateView):
@@ -121,4 +117,39 @@ def create_ad(request):
 
 
 def my_ads(request):
-    return render(request, 'myads.html')
+    user = CustomUser.objects.get(pk=request.user.id)
+    ads = Ad.objects.filter(user=user)
+    context = {'ads': ads}
+    return render(request, 'myads.html', context)
+
+
+def delete_my_ad(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    car = get_object_or_404(Car, id=ad.car.id)
+    car.delete()
+    return redirect('myads')
+
+
+def edit_my_ad(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    context = {'ad': ad}
+    return render(request, 'editmyad.html', context)
+
+
+def update_my_ad(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    if request.method == 'POST':
+        price = request.POST.get('price')
+        description = request.POST.get('description')
+        # Ad.objects.filter(id=ad_id).update(
+        #     user=ad.user,
+        #     car=ad.car,
+        #     price=price,
+        #     description=description,
+        # )
+        ad.price = price
+        ad.description = description
+        ad.save()
+        return redirect('myads')
+    context = {'ad': ad}
+    return render(request, 'editmyad.html', context)

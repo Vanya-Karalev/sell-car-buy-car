@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'createad.css' %}"/>
+    <script src="{% static 'createad.js' %}"></script>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+        <form method="post" action="{% url 'update_ad' ad_id=ad.id %}">
+            {% csrf_token %}
+
+            <div class="container-name">
+                <a>Цена:</a>
+                <input type="number" name="price" placeholder="цена" id="price" value="{{ ad.price }}">
+            </div>
+
+            <div class="container-name">
+                <a>Описание:</a>
+                <textarea name="description" placeholder="описание" id="description">{{ ad.description }}</textarea>
+            </div>
+
+            <div class="container-name">
+                <button type="submit">
+                    сохранить изменения
+                </button>
+            </div>
+        </form>
+    </body>
+{% endblock content %}

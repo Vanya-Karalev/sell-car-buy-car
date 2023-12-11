@@ -10,7 +10,7 @@ class Brand(models.Model):
 
 
 class Model(models.Model):
-    brand = models.ForeignKey(Brand, models.CASCADE, db_column='BrandID')
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_column='BrandID')
     name = models.CharField(db_column='Name')
 
     class Meta:
@@ -61,8 +61,8 @@ class Car(models.Model):
 
 
 class Ad(models.Model):
-    user = models.ForeignKey(CustomUser, models.CASCADE, db_column='UserID')
-    car = models.ForeignKey(Car, models.CASCADE, db_column='CarID')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, db_column='CarID')
     price = models.IntegerField(db_column='Price')
     description = models.CharField(db_column='Description')
     status = models.BooleanField(db_column='Status', default='False')
