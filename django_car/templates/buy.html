@@ -30,21 +30,29 @@
         {% for ad in ads %}
             <div class="card">
                 <div class="card-image">
-                    <img src="{% static 'кчау.jpg' %}" alt="Car Image">
+{#                    <img src="{% ad. %}" alt="Car Image">#}
+                {% if ad.images.all %}
+                    <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                {% else %}
+{#                    <img src="{% static 'path/to/placeholder-image.jpg' %}" alt="Placeholder Image">#}
+                {% endif %}
                 </div>
                 <div class="card-info">
                     <h2></h2>
                     <p>Год выпуска: {{ ad.car.year }} </p>
                     <p>Цена: $30,000</p>
                     <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
-                    <form method="post" action="{% url 'favorite' ad_id=ad.id %}">
-                        {% csrf_token %}
-                        {% if ad.id in favorite_ads %}
-                            <button type="submit">Удалить из избранного</button>
-                        {% else %}
-                            <button type="submit">Добавить в избранное</button>
-                        {% endif %}
-                    </form>
+                    {% if request.user.is_authenticated %}
+
+                        <form method="post" action="{% url 'favorite' ad_id=ad.id %}">
+                            {% csrf_token %}
+                            {% if ad.id in favorite_ads %}
+                                <button type="submit">Удалить из избранного</button>
+                            {% else %}
+                                <button type="submit">Добавить в избранное</button>
+                            {% endif %}
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

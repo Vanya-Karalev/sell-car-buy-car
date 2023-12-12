@@ -78,12 +78,20 @@ class Car(models.Model):
         return self.vin
 
 
+class Image(models.Model):
+    image = models.FileField(upload_to="images/", null=True)
+
+    class Meta:
+        db_table = 'Image'
+
+
 class Ad(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
     car = models.ForeignKey(Car, on_delete=models.CASCADE, db_column='CarID')
     price = models.IntegerField(db_column='Price')
     description = models.CharField(db_column='Description')
     status = models.BooleanField(db_column='Status', default='False')
+    images = models.ManyToManyField(Image)
 
     class Meta:
         db_table = 'Ad'

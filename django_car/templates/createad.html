@@ -8,7 +8,7 @@
 
 {% block content %}
     <body>
-        <form method="post" action="{% url 'createad' %}">
+        <form method="post" action="{% url 'createad' %}" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
@@ -152,9 +152,8 @@
                 <textarea name="description" placeholder="описание" id="description"></textarea>
             </div>
 
-
-        {#    <label for="avatar">Choose a ads pictures:</label>#}
-        {#    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" multiple/>#}
+            <label>Choose a ads pictures:</label>
+            <input type="file" name="images" accept="image/png, image/jpeg" multiple/>
 
             <div class="container-name">
                 <button type="submit">

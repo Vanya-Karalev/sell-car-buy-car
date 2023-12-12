@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites
+from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Image
 from users.models import CustomUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -77,6 +77,7 @@ def create_ad(request):
         gearnumber = request.POST.get('gearnumber')
         price = request.POST.get('price')
         description = request.POST.get('description')
+        images = request.FILES.getlist('images')
 
         # Step 1: Retrieve or create related instances
         brand, created = Brand.objects.get_or_create(name=brand_name)
@@ -108,6 +109,10 @@ def create_ad(request):
             price=price,
             description=description,
         )
+
+        for image in images:
+            image_instance = Image.objects.create(image=image)
+            ad.images.add(image_instance)
 
         return redirect('index')
     brands = Brand.objects.all()

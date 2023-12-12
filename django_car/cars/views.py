@@ -10,8 +10,13 @@ def get_cars(request):
 def buy_cars(request):
     ads = Ad.objects.all()
     brands = Brand.objects.all()
-    user = CustomUser.objects.get(pk=request.user.id)
-    favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
+    favorite_ads = []
+
+    if request.user.is_authenticated:
+        user = CustomUser.objects.get(pk=request.user.id)
+        favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
+    # user = CustomUser.objects.get(pk=request.user.id)
+    # favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
                'brands': brands,
                'favorite_ads': favorite_ads}
