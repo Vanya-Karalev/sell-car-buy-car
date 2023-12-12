@@ -4,7 +4,15 @@ from users.models import CustomUser
 
 
 def get_cars(request):
-    return render(request, 'index.html')
+    ads = Ad.objects.filter(status='True')
+    favorite_ads = []
+
+    if request.user.is_authenticated:
+        user = CustomUser.objects.get(pk=request.user.id)
+        favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
+    context = {'ads': ads,
+               'favorite_ads': favorite_ads}
+    return render(request, 'index.html', context)
 
 
 def buy_cars(request):

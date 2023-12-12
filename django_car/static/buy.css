@@ -125,7 +125,7 @@
 .filter {
     height: 200px;
     width: 950px;
-    margin: 50px 0 50px 60px;
+    margin: 20px 0 50px 60px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 3px 14px #0000001f;
@@ -193,7 +193,7 @@
 }
 
 .reklama_column {
-    padding: 94px 0 0 70px;
+    padding: 64px 0 0 70px;
     margin: 0 20px;
     height: 500px;
     width: 350px;

@@ -6,36 +6,97 @@
     <script src="{% static 'buy.js' %}"></script>
 {% endblock styles %}
 
+{#{% block content %}#}
+{#    <body>#}
+{##}
+{#    <div class="container-name">#}
+{#        <a><b>Мои объявления</b></a>#}
+{#    </div>#}
+{##}
+{#    <div class="container">#}
+{#        {% for ad in ads %}#}
+{#            <div class="card">#}
+{#                <div class="card-image">#}
+{#                    <img src="{% static 'кчау.jpg' %}" alt="Car Image">#}
+{#                </div>#}
+{#                <div class="card-info">#}
+{#                    <h2></h2>#}
+{#                    <p>Год выпуска: {{ ad.car.year }} </p>#}
+{#                    <p>Цена: ${{ ad.price }}</p>#}
+{#                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>#}
+{#                    <form method="post" action="{% url 'delete_ad' ad_id=ad.id %}" style="display: inline;">#}
+{#                        {% csrf_token %}#}
+{#                        <button type="submit">Удалить</button>#}
+{#                    </form>#}
+{#                    <form method="post" action="{% url 'edit_ad' ad_id=ad.id %}" style="display: inline;">#}
+{#                        {% csrf_token %}#}
+{#                        <button type="submit">Редактировать</button>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{##}
+{#</body>#}
+{#{% endblock content %}#}
+
 {% block content %}
     <body>
 
-    <div class="container-name">
-        <a><b>Мои объявления</b></a>
-    </div>
-
-    <div class="container">
-        {% for ad in ads %}
-            <div class="card">
-                <div class="card-image">
-                    <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-                </div>
-                <div class="card-info">
-                    <h2></h2>
-                    <p>Год выпуска: {{ ad.car.year }} </p>
-                    <p>Цена: ${{ ad.price }}</p>
-                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
-                    <form method="post" action="{% url 'delete_ad' ad_id=ad.id %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit">Удалить</button>
-                    </form>
-                    <form method="post" action="{% url 'edit_ad' ad_id=ad.id %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit">Редактировать</button>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="ads_column">
+            <div class="container-name">
+                <a><b>Мои объявления</b></a>
             </div>
-        {% endfor %}
+
+            <div class="container">
+                {% for ad in ads %}
+                    <div class="card">
+                        <div class="card-image">
+                            {% if ad.images.all %}
+                                <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                            {% endif %}
+                        </div>
+                        <div class="card-info">
+                            <div class="card-info_up">
+                                <a href="{% url 'carinfo' ad_id=ad.id %}"
+                                   class="car_name">{{ ad.car.brand.name }} {{ ad.car.model.name }}</a>
+                                <div class="car_short_info">
+                                    <p>{{ ad.car.year }} г.</p>
+                                    {% for engine in ad.car.engines.all %}
+                                        <p>{{ engine.capacity }} л, {{ engine.type|lower }}</p>
+                                    {% endfor %}
+                                    <p>{{ ad.car.body_type|lower }}</p>
+                                    <p>{{ ad.car.mileage }} км</p>
+                                </div>
+                                <div class="car_short_info">
+                                    <p class="car_price">{{ ad.price }} р.</p>
+                                    <form method="post" action="{% url 'edit_ad' ad_id=ad.id %}"
+                                          style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit">Редактировать</button>
+                                    </form>
+                                    <br>
+                                    <form method="post" action="{% url 'delete_ad' ad_id=ad.id %}"
+                                          style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-info_down">
+                                <p class="car_description">{{ ad.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="reklama_column">
+            <img src='https://exiterra.ru/images/sst/mem5.webp'/>
+        </div>
     </div>
 
-</body>
+    </body>
 {% endblock content %}

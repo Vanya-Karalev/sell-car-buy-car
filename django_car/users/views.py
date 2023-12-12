@@ -147,8 +147,10 @@ def update_my_ad(request, ad_id):
     if request.method == 'POST':
         price = request.POST.get('price')
         description = request.POST.get('description')
+        status = request.POST.get('status')
         ad.price = price
         ad.description = description
+        ad.status = status == 'on'
         ad.save()
         return redirect('myads')
     context = {'ad': ad}
@@ -159,15 +161,11 @@ def my_favorite_ads(request):
     user = CustomUser.objects.get(pk=request.user.id)
     ads = Ad.objects.all()
     favorite_ads = Favorites.objects.filter(user=user)
+    favoritee_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
-               'favorite_ads': favorite_ads}
+               'favorite_ads': favorite_ads,
+               'favoritee_ads': favoritee_ads}
     return render(request, 'myfavoriteads.html', context)
-
-# def favorite(request, ad_id):
-#     ad = get_object_or_404(Ad, id=ad_id)
-#     if request.method == 'POST':
-#         user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
-#         favorites = request.POST.get('favorite')
 
 
 @login_required
@@ -184,5 +182,23 @@ def favorite(request, ad_id):
             Favorites.objects.create(user=user, ad=ad)
 
         return redirect('buycar')
+
+    return HttpResponseForbidden("Invalid request")
+
+
+@login_required
+def favorite_ads(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    user = CustomUser.objects.get(pk=request.user.id)
+
+    if request.method == 'POST':
+        is_favorite = Favorites.objects.filter(user=user, ad=ad).exists()
+
+        if is_favorite:
+            Favorites.objects.filter(user=user, ad=ad).delete()
+        else:
+            Favorites.objects.create(user=user, ad=ad)
+
+        return redirect('myfavoriteads')
 
     return HttpResponseForbidden("Invalid request")

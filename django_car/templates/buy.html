@@ -68,21 +68,21 @@
                 <a><b>Купить автомобиль</b></a>
             </div>
 
-            <div class="filter">
-
-                <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
-                    <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
-                           id="selectedBrandBtn"
-                           oninput="filterFunction(this.value)">
-                    <div class="dropdown-content">
-                        {% for brand in brands %}
-                            <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"
-                               onclick="selectBrand(this)">{{ brand.name }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-
-            </div>
+{#            <div class="filter">#}
+{##}
+{#                <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">#}
+{#                    <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"#}
+{#                           id="selectedBrandBtn"#}
+{#                           oninput="filterFunction(this.value)">#}
+{#                    <div class="dropdown-content">#}
+{#                        {% for brand in brands %}#}
+{#                            <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"#}
+{#                               onclick="selectBrand(this)">{{ brand.name }}</a>#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#            </div>#}
 
             <div class="container">
                 {% for ad in ads %}

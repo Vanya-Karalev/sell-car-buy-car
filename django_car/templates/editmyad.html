@@ -21,6 +21,11 @@
                 <textarea name="description" placeholder="описание" id="description">{{ ad.description }}</textarea>
             </div>
 
+             <div class="container-name">
+                <a>Продвинуть объявление:</a>
+                <input type="checkbox" name="status" {% if ad.status %}checked{% endif %}>
+            </div>
+
             <div class="container-name">
                 <button type="submit">
                     сохранить изменения

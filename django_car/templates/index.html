@@ -12,116 +12,20 @@
     </div>
 
     <div class="container">
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
+        {% for ad in ads %}
+            <div class="card">
+                <div class="card-image">
+                    {% if ad.images.all %}
+                        <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                    {% endif %}
+                </div>
+                <div class="card-info">
+                    <h2>Марка и модель автомобиля</h2>
+                    <p>Год выпуска: 2022</p>
+                    <p>Цена: $30,000</p>
+                </div>
             </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image">
-                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-            </div>
-            <div class="card-info">
-                <h2>Марка и модель автомобиля</h2>
-                <p>Год выпуска: 2022</p>
-                <p>Цена: $30,000</p>
-            </div>
-        </div>
-
+        {% endfor %}
     </div>
     </body>
 {% endblock content %}
