@@ -6,57 +6,134 @@
     <script src="{% static 'buy.js' %}"></script>
 {% endblock styles %}
 
+{#{% block content %}#}
+{#    <body>#}
+{##}
+{#    <div class="container-name">#}
+{#        <a><b>Купить автомобиль</b></a>#}
+{#    </div>#}
+{##}
+{#    <div class="filter">#}
+{##}
+{#        <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">#}
+{#            <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">#}
+{#            <div class="dropdown-content">#}
+{#                {% for brand in brands %}#}
+{#                    <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{##}
+{#    <div class="container">#}
+{#        {% for ad in ads %}#}
+{#            <div class="card">#}
+{#                <div class="card-image">#}
+{#                    <img src="{% ad. %}" alt="Car Image">#}
+{#                {% if ad.images.all %}#}
+{#                    <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">#}
+{#                {% endif %}#}
+{#                </div>#}
+{#                <div class="card-info">#}
+{#                    <h2></h2>#}
+{#                    <p>Год выпуска: {{ ad.car.year }} </p>#}
+{#                    <p>Цена: $30,000</p>#}
+{#                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>#}
+{#                    {% if request.user.is_authenticated %}#}
+{##}
+{#                        <form method="post" action="{% url 'favorite' ad_id=ad.id %}">#}
+{#                            {% csrf_token %}#}
+{#                            {% if ad.id in favorite_ads %}#}
+{#                                <button type="submit">Удалить из избранного</button>#}
+{#                            {% else %}#}
+{#                                <button type="submit">Добавить в избранное</button>#}
+{#                            {% endif %}#}
+{#                        </form>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{##}
+{#</body>#}
+{#{% endblock content %}#}
+
 {% block content %}
     <body>
 
-    <div class="container-name">
-        <a><b>Купить автомобиль</b></a>
-    </div>
+    <div class="row">
+        <div class="ads_column">
+            <div class="container-name">
+                <a><b>Купить автомобиль</b></a>
+            </div>
 
-    <div class="filter">
+            <div class="filter">
 
-        <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
-            <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn" id="selectedBrandBtn" oninput="filterFunction(this.value)">
-            <div class="dropdown-content">
-                {% for brand in brands %}
-                    <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}" onclick="selectBrand(this)">{{ brand.name }}</a>
+                <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
+                    <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
+                           id="selectedBrandBtn"
+                           oninput="filterFunction(this.value)">
+                    <div class="dropdown-content">
+                        {% for brand in brands %}
+                            <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"
+                               onclick="selectBrand(this)">{{ brand.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="container">
+                {% for ad in ads %}
+                    <div class="card">
+                        <div class="card-image">
+                            {% if ad.images.all %}
+                                <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                            {% endif %}
+                        </div>
+                        <div class="card-info">
+                            <div class="card-info_up">
+                                <a href="{% url 'carinfo' ad_id=ad.id %}" class="car_name">{{ ad.car.brand.name }} {{ ad.car.model.name }}</a>
+                                <div class="car_short_info">
+                                    <p>{{ ad.car.year }} г.</p>
+                                    {% for engine in ad.car.engines.all %}
+                                    <p>{{ engine.capacity }} л, {{ engine.type|lower }}</p>
+                                    {% endfor %}
+                                    <p>{{ ad.car.body_type|lower }}</p>
+                                    <p>{{ ad.car.mileage }} км</p>
+                                </div>
+                                <p class="car_price">{{ ad.price }} р.</p>
+
+                                {% if request.user.is_authenticated %}
+                                    <form method="post" action="{% url 'favorite' ad_id=ad.id %}">
+                                        {% csrf_token %}
+                                        {% if ad.id in favorite_ads %}
+                                            <button class="car_favorite_button" type="submit">
+                                                <svg aria-hidden="true" height="40" viewBox="0 0 24 24" width="40" xmlns="http://www.w3.org/2000/svg" fill="gold" stroke="goldenrod"><path class="stroke" d="M15.5 6h-7c-.274 0-.5.226-.5.5v9.757l3.981-2.661L16 16.269V6.5c0-.274-.226-.5-.5-.5zM7 4h10c.549 0 1 .451 1 1v14.068a.503.503 0 0 1-.777.416L11.984 16l-5.206 3.48A.5.5 0 0 1 6 19.064V5c0-.549.451-1 1-1z"></path><path class="fill" d="M7 4h10c.549 0 1 .451 1 1v14.068a.505.505 0 0 1-.777.416L11.984 16l-5.206 3.48A.5.5 0 0 1 6 19.064V5c0-.549.451-1 1-1z"></path></svg>
+                                            </button>
+                                        {% else %}
+                                            <button class="car_favorite_button" type="submit">
+                                                <svg aria-hidden="true" height="40" viewBox="0 0 24 24" width="40" xmlns="http://www.w3.org/2000/svg" fill="white" stroke="goldenrod"><path class="stroke" d="M15.5 6h-7c-.274 0-.5.226-.5.5v9.757l3.981-2.661L16 16.269V6.5c0-.274-.226-.5-.5-.5zM7 4h10c.549 0 1 .451 1 1v14.068a.503.503 0 0 1-.777.416L11.984 16l-5.206 3.48A.5.5 0 0 1 6 19.064V5c0-.549.451-1 1-1z"></path><path class="fill" d="M7 4h10c.549 0 1 .451 1 1v14.068a.505.505 0 0 1-.777.416L11.984 16l-5.206 3.48A.5.5 0 0 1 6 19.064V5c0-.549.451-1 1-1z"></path></svg>
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+
+                            </div>
+                            <div class="card-info_down">
+                                <p class="car_description">{{ ad.description }}</p>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
+
         </div>
-
+        <div class="reklama_column">
+            <img src='https://exiterra.ru/images/sst/mem5.webp'/>
+        </div>
     </div>
 
-    <div class="container">
-        {% for ad in ads %}
-            <div class="card">
-                <div class="card-image">
-{#                    <img src="{% ad. %}" alt="Car Image">#}
-                {% if ad.images.all %}
-                    <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
-                {% else %}
-{#                    <img src="{% static 'path/to/placeholder-image.jpg' %}" alt="Placeholder Image">#}
-                {% endif %}
-                </div>
-                <div class="card-info">
-                    <h2></h2>
-                    <p>Год выпуска: {{ ad.car.year }} </p>
-                    <p>Цена: $30,000</p>
-                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
-                    {% if request.user.is_authenticated %}
-
-                        <form method="post" action="{% url 'favorite' ad_id=ad.id %}">
-                            {% csrf_token %}
-                            {% if ad.id in favorite_ads %}
-                                <button type="submit">Удалить из избранного</button>
-                            {% else %}
-                                <button type="submit">Добавить в избранное</button>
-                            {% endif %}
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-</body>
+    </body>
 {% endblock content %}
