@@ -37,6 +37,14 @@
                     <p>Год выпуска: {{ ad.car.year }} </p>
                     <p>Цена: $30,000</p>
                     <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
+                    <form method="post" action="{% url 'favorite' ad_id=ad.id %}">
+                        {% csrf_token %}
+                        {% if ad.id in favorite_ads %}
+                            <button type="submit">Удалить из избранного</button>
+                        {% else %}
+                            <button type="submit">Добавить в избранное</button>
+                        {% endif %}
+                    </form>
                 </div>
             </div>
         {% endfor %}

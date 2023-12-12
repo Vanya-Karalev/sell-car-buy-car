@@ -3,10 +3,11 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad
+from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites
 from users.models import CustomUser
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 
 class SignUpView(CreateView):
@@ -141,15 +142,42 @@ def update_my_ad(request, ad_id):
     if request.method == 'POST':
         price = request.POST.get('price')
         description = request.POST.get('description')
-        # Ad.objects.filter(id=ad_id).update(
-        #     user=ad.user,
-        #     car=ad.car,
-        #     price=price,
-        #     description=description,
-        # )
         ad.price = price
         ad.description = description
         ad.save()
         return redirect('myads')
     context = {'ad': ad}
     return render(request, 'editmyad.html', context)
+
+
+def my_favorite_ads(request):
+    user = CustomUser.objects.get(pk=request.user.id)
+    ads = Ad.objects.all()
+    favorite_ads = Favorites.objects.filter(user=user)
+    context = {'ads': ads,
+               'favorite_ads': favorite_ads}
+    return render(request, 'myfavoriteads.html', context)
+
+# def favorite(request, ad_id):
+#     ad = get_object_or_404(Ad, id=ad_id)
+#     if request.method == 'POST':
+#         user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
+#         favorites = request.POST.get('favorite')
+
+
+@login_required
+def favorite(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    user = request.user
+
+    if request.method == 'POST':
+        is_favorite = Favorites.objects.filter(user=user, ad=ad).exists()
+
+        if is_favorite:
+            Favorites.objects.filter(user=user, ad=ad).delete()
+        else:
+            Favorites.objects.create(user=user, ad=ad)
+
+        return redirect('buycar')
+
+    return HttpResponseForbidden("Invalid request")

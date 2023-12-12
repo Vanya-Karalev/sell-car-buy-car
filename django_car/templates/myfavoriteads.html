@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'buy.css' %}"/>
+    <script src="{% static 'buy.js' %}"></script>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+
+    <div class="container-name">
+        <a><b>Избранные объявления</b></a>
+    </div>
+
+    <div class="container">
+        {% for ad in ads %}
+            {% for favorite_ad in favorite_ads %}
+                {% if favorite_ad.ad == ad %}
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="{% static 'кчау.jpg' %}" alt="Car Image">
+                        </div>
+                        <div class="card-info">
+                            <h2></h2>
+                            <p>Год выпуска: {{ ad.car.year }} </p>
+                            <p>Цена: ${{ ad.price }}</p>
+                            <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+</body>
+{% endblock content %}

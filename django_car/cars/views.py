@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad
+from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites
+from users.models import CustomUser
 
 
 def get_cars(request):
@@ -9,8 +10,11 @@ def get_cars(request):
 def buy_cars(request):
     ads = Ad.objects.all()
     brands = Brand.objects.all()
+    user = CustomUser.objects.get(pk=request.user.id)
+    favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
-               'brands': brands}
+               'brands': brands,
+               'favorite_ads': favorite_ads}
     return render(request, 'buy.html', context)
 
 

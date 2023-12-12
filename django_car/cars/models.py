@@ -8,6 +8,9 @@ class Brand(models.Model):
     class Meta:
         db_table = 'Brand'
 
+    def __str__(self):
+        return self.name
+
 
 class Model(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, db_column='BrandID')
@@ -15,6 +18,9 @@ class Model(models.Model):
 
     class Meta:
         db_table = 'Model'
+
+    def __str__(self):
+        return self.name
 
 
 class Engine(models.Model):
@@ -27,6 +33,9 @@ class Engine(models.Model):
     class Meta:
         db_table = 'Engine'
 
+    def __str__(self):
+        return 'type: {}, horse power: {}'.format(self.type, self.horse_power)
+
 
 class Gearbox(models.Model):
     type = models.CharField(db_column='Type')
@@ -35,6 +44,9 @@ class Gearbox(models.Model):
     class Meta:
         db_table = 'Gearbox'
 
+    def __str__(self):
+        return 'type: {}, gear number: {}'.format(self.type, self.gear_number)
+
 
 class Suspension(models.Model):
     type = models.CharField(db_column='Type')
@@ -42,6 +54,9 @@ class Suspension(models.Model):
 
     class Meta:
         db_table = 'Suspension'
+
+    def __str__(self):
+        return 'type: {}, clearance: {}'.format(self.type, self.clearance)
 
 
 class Car(models.Model):
@@ -59,6 +74,9 @@ class Car(models.Model):
     class Meta:
         db_table = 'Car'
 
+    def __str__(self):
+        return self.vin
+
 
 class Ad(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
@@ -69,3 +87,17 @@ class Ad(models.Model):
 
     class Meta:
         db_table = 'Ad'
+
+    def __str__(self):
+        return self.price
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, db_column='AdID')
+
+    class Meta:
+        db_table = 'Favorites'
+
+    def __str__(self):
+        return f"{self.user.username}'s Favorite: {self.ad}"
