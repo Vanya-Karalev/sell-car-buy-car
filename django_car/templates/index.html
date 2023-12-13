@@ -20,9 +20,11 @@
                     {% endif %}
                 </div>
                 <div class="card-info">
-                    <h2>Марка и модель автомобиля</h2>
-                    <p>Год выпуска: 2022</p>
-                    <p>Цена: $30,000</p>
+                    <h2>{{ ad.car.brand.name }} {{ ad.car.model.name }}</h2>
+                    <p>Год выпуска: {{ ad.car.year }}</p>
+                    <p>Цена: {{ ad.price }}р.</p>
+                    <p>Пробег: {{ ad.car.mileage }}км.</p>
+                    <a href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
                 </div>
             </div>
         {% endfor %}

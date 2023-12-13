@@ -7,7 +7,7 @@
 {% endblock styles %}
 
 {% block content %}
-    <form method="post" action="{% url 'createad' %}" enctype="multipart/form-data">
+    <form method="post" action="{% url 'createauction' %}" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="column">
@@ -156,8 +156,17 @@
         </div>
 
         <div class="field">
-            <p>Цена:</p>
-            <input type="number" name="price" placeholder="Цена" id="price">
+            <p>Начальная цена:</p>
+            <input type="number" name="start_price" placeholder="Начальная цена" id="start_price">
+        </div>
+
+    <div class="field">
+            <p>Дата начала аукциона:</p>
+            <input type="datetime-local" name="start_date" placeholder="Дата начала аукциона" id="start_date">
+        </div>
+        <div class="field">
+            <p>Дата конца аукциона:</p>
+            <input type="datetime-local" name="end_date" placeholder="Дата конца аукциона" id="end_date">
         </div>
 
         <div class="field" style="align-items: start">

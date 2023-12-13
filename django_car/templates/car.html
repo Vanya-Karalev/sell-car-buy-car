@@ -7,28 +7,71 @@
 
 {% block content %}
     <body>
-        <div class="container-name">
-            <a><b>Купить автомобиль</b></a>
-        </div>
+    <div class="container-name">
+        <h3>Подробная информация об автомобиле</h3>
+    </div>
 
-        <div class="container">
-            <div class="card">
-                <div class="card-image">
-                    <img src="{% static 'кчау.jpg' %}" alt="Car Image 1" class="large-image">
+    <div class="container">
+        <div class="card">
+
+            <div class="card-image">
+                <div class="slides">
+                    {% if ad.images.all %}
+                        {% for img in ad.images.all %}
+                            <img src="{{ img.image.url }}" alt="Car Image">
+                        {% endfor %}
+                    {% endif %}
+
                 </div>
-                <div class="card-info">
-                    <h2 ><a style="margin-right: 20px;">Марка и модель автомобиля</a><a style="margin-left: 20px;">Цена: $30,000</a></h2>
-                    <p>Год выпуска: {{ ad.car.year }}</p>
-                    <p>Двигатель: V6, 3.0 л</p>
-                    <p>Трансмиссия: Автоматическая</p>
-                    <p>Привод: Полный</p>
-                    <p>Цвет: Синий</p>
-                    <p>...</p>
-                    <p>Продавец: Дмитрий</p>
-                    <p>Телефон: +12345678</p>
-                    <button>Купить</button>
-                </div>
+                <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+                <button class="next" onclick="changeSlide(1)">&#10095;</button>
+            </div>
+
+            <script>
+                let slideIndex = 0;
+
+                function changeSlide(n) {
+                    showSlides(slideIndex += n);
+                }
+
+                function showSlides(n) {
+                    const slides = document.querySelectorAll('.slides img');
+
+                    if (n >= slides.length) {
+                        slideIndex = 0;
+                    } else if (n < 0) {
+                        slideIndex = slides.length - 1;
+                    }
+
+                    const offset = -100 * slideIndex + '%';
+                    document.querySelector('.slides').style.transform = `translateX(${offset})`;
+                }
+            </script>
+
+            <div class="card-info">
+                <h2>{{ ad.car.brand.name }} {{ ad.car.model.name }}</h2>
+                <h2>Цена: {{ ad.price }}р.</h2>
+                <p>Год выпуска: {{ ad.car.year }}</p>
+                <p>Пробег: {{ ad.car.mileage }}км.</p>
+                <p>Тип кузова: {{ ad.car.body_type }}</p>
+                {% for engine in ad.car.engines.all %}
+                    <p>Объем двигателя: {{ engine.capacity }}</p>
+                    <p>Крутящий момент: {{ engine.torque }}</p>
+                    <p>Тип двигателя: {{ engine.type }}</p>
+                {% endfor %}
+                {% for gearbox in ad.car.gearboxes.all %}
+                    <p>Тип коробки передач: {{ gearbox.type }}</p>
+                    <p>Кол-во передач: {{ gearbox.gear_number }}</p>
+                {% endfor %}
+                {% for suspension in ad.car.suspensions.all %}
+                    <p>Тип подвески: {{ suspension.type }}</p>
+                    <p>Клиренс: {{ suspension.clearance }}</p>
+                {% endfor %}
+                <p>Цвет: {{ ad.car.color }}</p>
+                <h2>Продавец: {{ ad.user.first_name }}</h2>
+                <h2>Телефон: {{ ad.user.phone }}</h2>
             </div>
         </div>
+    </div>
     </body>
 {% endblock content %}

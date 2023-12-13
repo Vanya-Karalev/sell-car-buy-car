@@ -109,3 +109,29 @@ class Favorites(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Favorite: {self.ad}"
+
+
+class Bid(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
+    amount = models.IntegerField(db_column='Amount')
+    date = models.DateTimeField(db_column='Date')
+
+    class Meta:
+        db_table = 'Bid'
+
+
+class Auction(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, db_column='CarID')
+    start_price = models.IntegerField(db_column='StartPrice')
+    start_date = models.DateTimeField(db_column='StartDate')
+    end_date = models.DateTimeField(db_column='EndDate')
+    description = models.CharField(db_column='Description')
+    bid = models.ForeignKey(Bid, on_delete=models.DO_NOTHING, db_column='BidID', blank=True, null=True)
+    images = models.ManyToManyField(Image)
+
+    class Meta:
+        db_table = 'Auction'
+
+    def __str__(self):
+        return self.start_date

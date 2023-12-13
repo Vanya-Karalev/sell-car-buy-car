@@ -71,7 +71,6 @@ function toggleModelDropdown() {
     } else {
         var dropdown = document.querySelector('.dropdown_model');
         dropdown.classList.toggle('active');
-        filterModels();
     }
 }
 

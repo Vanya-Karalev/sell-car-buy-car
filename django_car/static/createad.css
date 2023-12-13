@@ -1,22 +1,64 @@
-.container-name {
-    margin-left: 80px;
-    padding-top: 20px;
-    font-size: 20px;
+form {
+    padding: 30px 0 50px 100px;
 }
 
-.filter {
-    width: 60%;
-    height: 200px;
-    margin: 50px 50px 50px 80px;
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 3px 14px #0000001f;
-    border-radius: 8px;
+}
+
+p {
+    margin-bottom: 5px;
+    width: 200px;
+}
+
+h2 {
+    padding: 20px 0 30px 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+input, select {
+    padding-left: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+    height: 50px;
+	width: 300px;
+	box-sizing: border-box;
+	font-size: 16px;
+}
+
+input{
+    padding-left: 15px;
+}
+
+textarea {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+	border-radius: 3px;
+    width: 300px;
+    height: 150px;
+    resize: none;
+    font-size: 16px;
+}
+
+textarea::placeholder {
+    padding: 5px 0 0 10px;
+    font-size: 16px;
 }
 
 .dropdown_brand, .dropdown_model {
     display: inline-block;
-    padding: 15px;
 }
 
 .dropdown-content {
@@ -24,12 +66,16 @@
     position: absolute;
     background-color: #f9f9f9;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    width: 250px;
+    width: 300px;
     max-height: 200px;
-    overflow-y: auto;
     z-index: 1;
     border-radius: 5px;
-    overflow: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.dropdown-content::-webkit-scrollbar {
+  display: none;
 }
 
 .dropdown-content label {
@@ -52,65 +98,21 @@
 }
 
 .dropdown_brand input[type="text"], .dropdown_model input[type="text"] {
-    width: 230px;
-    background-color: #f1f1f1;
+    width: 300px;
+    height: 50px;
+    border: 1px solid #ccc;
     color: black;
     padding: 10px 10px;
-    border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
 }
 
-
-
-
-
-
-.container {
-    margin-left: 60px;
+.upload_button {
+    width: 300px;
+    height: 50px;
 }
 
-.card {
-    display: flex;
-    width: 70%;
-    margin: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.card-image {
-    width: 40%;
-    overflow: hidden;
-}
-
-.image {
-    width: 100%;
-    height: 0;
-    padding-top: 75%;
-    position: relative;
-}
-
-.image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.card-info {
-    padding: 20px;
-    width: 60%;
-    box-sizing: border-box;
-}
-
-h2 {
-    margin-bottom: 10px;
-}
-
-p {
-    margin-bottom: 8px;
+.upload_button input[type="file"] {
+    display: none;
 }

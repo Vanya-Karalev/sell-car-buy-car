@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'car.css' %}"/>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+    <div class="container-name">
+        <h3>Подробная информация об автомобиле</h3>
+    </div>
+
+    <div class="container">
+        <div class="card">
+
+            <div class="card-image">
+                <div class="slides">
+                    {% if auction.images.all %}
+                        {% for img in auction.images.all %}
+                            <img src="{{ img.image.url }}" alt="Car Image">
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+                <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+                <button class="next" onclick="changeSlide(1)">&#10095;</button>
+            </div>
+
+            <script>
+                let slideIndex = 0;
+
+                function changeSlide(n) {
+                    showSlides(slideIndex += n);
+                }
+
+                function showSlides(n) {
+                    const slides = document.querySelectorAll('.slides img');
+
+                    if (n >= slides.length) {
+                        slideIndex = 0;
+                    } else if (n < 0) {
+                        slideIndex = slides.length - 1;
+                    }
+
+                    const offset = -100 * slideIndex + '%';
+                    document.querySelector('.slides').style.transform = `translateX(${offset})`;
+                }
+            </script>
+
+            <div class="card-info">
+                <form method="post">
+                    {% csrf_token %}
+                    <h2>{{ auction.car.brand.name }} {{ auction.car.model.name }}</h2>
+                    <p>Год выпуска: {{ auction.car.year }}</p>
+                    <p>Пробег: {{ auction.car.mileage }}км.</p>
+                    <p>Тип кузова: {{ auction.car.body_type }}</p>
+                    {% for engine in auction.car.engines.all %}
+                        <p>Объем двигателя: {{ engine.capacity }}</p>
+                        <p>Крутящий момент: {{ engine.torque }}</p>
+                        <p>Тип двигателя: {{ engine.type }}</p>
+                    {% endfor %}
+                    {% for gearbox in auction.car.gearboxes.all %}
+                        <p>Тип коробки передач: {{ gearbox.type }}</p>
+                        <p>Кол-во передач: {{ gearbox.gear_number }}</p>
+                    {% endfor %}
+                    {% for suspension in auction.car.suspensions.all %}
+                        <p>Тип подвески: {{ suspension.type }}</p>
+                        <p>Клиренс: {{ suspension.clearance }}</p>
+                    {% endfor %}
+                    <p>Цвет: {{ auction.car.color }}</p>
+                    <p>Дата начала аукциона: {{ auction.start_date }}</p>
+                    <p>Дата конца аукциона: {{ auction.end_date }}</p>
+                    <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
+                    <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
+                    <label>Введите сумму ставки:</label>
+                    <input type="number" name="bid">
+                    <button type="submit">Сделать ставку</button>
+                    {#                <h2>Продавец: {{ auction.user.first_name }}</h2>#}
+                    {#                <h2>Телефон: {{ auction.user.phone }}</h2>#}
+                </form>
+            </div>
+        </div>
+    </div>
+    </body>
+{% endblock content %}

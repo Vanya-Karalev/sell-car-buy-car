@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
     path('createad/', views.create_ad, name='createad'),
+    path('createauction/', views.create_auction, name='createauction'),
     path('myads/', views.my_ads, name='myads'),
     path('myfavoriteads/', views.my_favorite_ads, name='myfavoriteads'),
     path('myfavoriteads/<int:ad_id>', views.favorite_ads, name='favoriteads'),
