@@ -7,30 +7,51 @@
 {% endblock styles %}
 
 {% block content %}
-    <body>
-        <form method="post" action="{% url 'update_ad' ad_id=ad.id %}">
-            {% csrf_token %}
+    <form method="post" action="{% url 'update_ad' ad_id=ad.id %}">
+        {% csrf_token %}
+        {#        <div class="column">#}
+        {#            <h2>Общая информация об объявлении:</h2>#}
+        {#            <div class="field">#}
+        {#                <a>Цена:</a>#}
+        {#                <input type="number" name="price" placeholder="цена" id="price" value="{{ ad.price }}">#}
+        {#            </div>#}
+        {##}
+        {#            <div class="field">#}
+        {#                <a>Описание:</a>#}
+        {#                <textarea name="description" placeholder="описание" id="description">{{ ad.description }}</textarea>#}
+        {#            </div>#}
+        {##}
+        {#                    <div class="field">#}
+        {#                        <a>Продвинуть объявление за доп. плату:</a>#}
+        {#                        <input type="checkbox" name="status" {% if ad.status %}checked{% endif %}>#}
+        {#                    </div>#}
+        {##}
+        {#            <div class="field" style="padding-top: 50px">#}
+        {#                <button type="submit" style="height: 50px; width: 200px">#}
+        {#                    Обновить данные#}
+        {#                </button>#}
+        {#            </div>#}
+        {#        </div>#}
 
-            <div class="container-name">
-                <a>Цена:</a>
-                <input type="number" name="price" placeholder="цена" id="price" value="{{ ad.price }}">
-            </div>
+        <div class="field">
+            <p>Цена:</p>
+            <input type="number" name="price" placeholder="Цена" id="price" value="{{ ad.price }}">
+        </div>
 
-            <div class="container-name">
-                <a>Описание:</a>
-                <textarea name="description" placeholder="описание" id="description">{{ ad.description }}</textarea>
-            </div>
+        <div class="field" style="align-items: start">
+            <p>Описание:</p>
+            <textarea name="description" placeholder="Описание" id="description">{{ ad.description }}</textarea>
+        </div>
 
-             <div class="container-name">
-                <a>Продвинуть объявление:</a>
-                <input type="checkbox" name="status" {% if ad.status %}checked{% endif %}>
-            </div>
+        <div class="field">
+            <a>Продвинуть объявление <br>за доп. плату:</a>
+            <input type="checkbox" name="status" {% if ad.status %}checked{% endif %} style="margin-left: -105px">
+        </div>
 
-            <div class="container-name">
-                <button type="submit">
-                    сохранить изменения
-                </button>
-            </div>
-        </form>
-    </body>
+        <div class="field" style="padding-top: 50px">
+            <button type="submit" style="height: 50px; width: 200px">
+                Обновить данные
+            </button>
+        </div>
+    </form>
 {% endblock content %}

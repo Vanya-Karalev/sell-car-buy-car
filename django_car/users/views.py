@@ -32,7 +32,6 @@ class ProfileView(UpdateView):
 
     def form_valid(self, form):
         user = form.save()
-        # You can add any additional logic here if needed
         return super().form_valid(form)
 
 

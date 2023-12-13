@@ -32,15 +32,8 @@
             Sign In
           </button>
         </form>
-          {%if messages%}
-                {%for message in messages%}
-                    <div class="alert alert-{{message.tags}}">
-                         {{message}}
-                    </div>
-                {%endfor%}
-            {%endif%}
         <p class="message">
-          Not registered? <a href="{% url 'signup' %}">Create an account</a>
+          Еще не зарегистрированы? <a href="{% url 'signup' %}">Регистрация</a>
         </p>
       </div>
     </div>

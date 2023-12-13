@@ -73,9 +73,11 @@
                     <p>Дата конца аукциона: {{ auction.end_date }}</p>
                     <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
                     <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
-                    <label>Введите сумму ставки:</label>
-                    <input type="number" name="bid">
-                    <button type="submit">Сделать ставку</button>
+                    {% if request.user.is_authenticated %}
+                        <label>Введите сумму ставки:</label>
+                        <input type="number" name="bid">
+                        <button type="submit">Сделать ставку</button>
+                    {% endif %}
                     {#                <h2>Продавец: {{ auction.user.first_name }}</h2>#}
                     {#                <h2>Телефон: {{ auction.user.phone }}</h2>#}
                 </form>

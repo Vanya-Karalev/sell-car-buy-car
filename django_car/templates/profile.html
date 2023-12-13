@@ -2,15 +2,37 @@
 {% load static %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{% static '' %}"/>
+    <link rel="stylesheet" href="{% static 'createad.css' %}"/>
 {% endblock styles %}
 
 {% block content %}
     <body>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Обновить данные</button>
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        <div class="column">
+            <h2>Общая информация:</h2>
+            <div class="field">
+                <p>Почта:</p>
+                <input type="text" name="email" placeholder="почта" value="{{ request.user.email }}">
+            </div>
+            <div class="field">
+                <p>Имя:</p>
+                <input type="text" name="first_name" placeholder="имя" value="{{ request.user.first_name }}">
+            </div>
+            <div class="field">
+                <p>Фамилия:</p>
+                <input type="text" name="last_name" placeholder="фамилия" value="{{ request.user.last_name }}">
+            </div>
+            <div class="field">
+                <p>Номер телефона:</p>
+                <input type="text" name="phone" placeholder="телефон" value="{{ request.user.phone }}">
+            </div>
+        </div>
+        <div class="field" style="padding-top: 50px">
+            <button type="submit" style="height: 50px; width: 200px">
+                Обновить данные
+            </button>
+        </div>
+    </form>
     </body>
 {% endblock content %}

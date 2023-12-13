@@ -1,12 +1,79 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'signin.css' %}"/>
+{% endblock styles %}
+
 {% block content %}
-    <div class="container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Регистрация</button>
-        </form>
+    <body>
+    <div class="container" style="margin: 80px auto;">
+        <div class="login-page">
+            <h1 class="login-page__header">Sign Up</h1>
+            <form method="POST" class="login-form">
+                {% csrf_token %}
+                <label for="username" class="form__label">Username:</label>
+                <input
+                        class="form__input-username"
+                        type="text"
+                        placeholder="username"
+                        id="username"
+                        name="username"
+                        required
+                />
+                <label for="email" class="form__label">Email:</label>
+                <input
+                        class="form__input-username"
+                        type="email"
+                        placeholder="email"
+                        id="email"
+                        name="email"
+                        required
+                />
+                <label for="phone" class="form__label">Phone:</label>
+                <input
+                        class="form__input-username"
+                        type="tel"
+                        placeholder="phone number"
+                        id="phone"
+                        name="phone"
+                        required
+                />
+                <label for="name" class="form__label">First name:</label>
+                <input
+                        class="form__input-username"
+                        type="text"
+                        placeholder="first name"
+                        id="name"
+                        name="first_name"
+                        required
+                />
+                <label for="password" class="form__label">Password:</label>
+                <input
+                        class="form__input-username"
+                        type="password"
+                        placeholder="password"
+                        id="password"
+                        name="password1"
+                        required
+                />
+                <label for="repeat_password" class="form__label">Repeat password:</label>
+                <input
+                        class="form__input-password"
+                        type="password"
+                        placeholder="repeat password"
+                        id="repeat_password"
+                        name="password2"
+                        required
+                />
+                <button type="submit" class="form__signin">
+                    Sign Up
+                </button>
+            </form>
+            <p class="message">
+                Уже зарегистрированы? <a href="{% url 'signin' %}">Вход</a>
+            </p>
+        </div>
     </div>
+    </body>
 {% endblock content %}
