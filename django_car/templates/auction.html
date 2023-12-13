@@ -41,15 +41,11 @@
                                     <p>Стартовая ставка:</p>
                                     <p>{{ auction.start_price }}</p>
                                     <p>Текущая ставка:</p>
-                                    {% for bid in bids %}
-                                        {% if auction.bid.id == bid.id %}
-                                            {% if not bid.amount.all %}
-                                                <p>-</p>
-                                            {% else %}
-                                                <p>{{ bid.amount.last }}</p>
-                                            {% endif %}
+                                        {% if not auction.bid.amount %}
+                                            <p>-</p>
+                                        {% else %}
+                                            <p>{{ auction.bid.amount }}</p>
                                         {% endif %}
-                                    {% endfor %}
                                 </div>
                                 <div class="car_short_info">
                                     <p>{{ auction.car.year }} г.</p>

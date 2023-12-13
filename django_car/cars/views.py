@@ -35,9 +35,8 @@ def buy_cars(request):
 
 def auction(request):
     auctions = Auction.objects.all()
-    bids = Bid.objects.all()
-    context = {'auctions': auctions,
-               'bids': bids}
+
+    context = {'auctions': auctions}
     return render(request, 'auction.html', context)
 
 
@@ -48,6 +47,7 @@ def car_info(request, ad_id):
 
 
 def car_info_auction(request, auction_id):
+    auction = get_object_or_404(Auction, id=auction_id)
     if request.method == 'POST':
         current_bid = request.POST.get('bid')
         user = request.user
@@ -59,28 +59,18 @@ def car_info_auction(request, auction_id):
             amount=current_bid,
             date=parsed_date
         )
+        auction.bid = bid
+        auction.save()
         return redirect('carinfoauc', auction_id=auction_id)
-    auction = get_object_or_404(Auction, id=auction_id)
-    bids = Bid.objects.all()
-    aucs = Auction.objects.all()
-    print(bids)
-    for bid in bids:
-        print(bid.id)
-
-    print(auction)
-    if bids:
-        max_bid = 0
-        for bid in bids.all():
-            if bid.amount > max_bid:
-                max_bid = bid.amount
-    else:
-        max_bid = 0
-
-    # try:
-    #     bid = Auction.objects.
-    #     print(bid)
-    # except Bid.DoesNotExist:
-    #     bid = None
+    max_bid = 0
+    if auction.bid:
+        bids = Bid.objects.filter(id=auction.bid.id)
+        if bids:
+            for bid in bids.all():
+                if bid.amount > max_bid:
+                    max_bid = bid.amount
+        else:
+            max_bid = 0
     context = {'auction': auction,
                'max_bid': max_bid}
     return render(request, 'auctioncar.html', context)
