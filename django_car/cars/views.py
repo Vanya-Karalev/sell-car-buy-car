@@ -20,17 +20,30 @@ def get_cars(request):
 def buy_cars(request):
     ads = Ad.objects.all()
     brand_name = ''
+    model_name = ''
     start_price = ''
     end_price = ''
+    start_year = ''
+    end_year = ''
+    start_mileage = ''
+    end_mileage = ''
     if request.method == 'POST':
         brand_name = request.POST.get('selected_brand_name')
+        model_name = request.POST.get('selected_model_name')
         start_price = request.POST.get('start_price')
         end_price = request.POST.get('end_price')
+        start_year = request.POST.get('start_year')
+        end_year = request.POST.get('end_year')
+        start_mileage = request.POST.get('start_mileage')
+        end_mileage = request.POST.get('end_mileage')
 
         filter_params = {}
 
         if brand_name:
             filter_params['car__brand__name'] = brand_name
+
+        if model_name:
+            filter_params['car__model__name'] = model_name
 
         if start_price:
             filter_params['price__gte'] = start_price
@@ -38,10 +51,23 @@ def buy_cars(request):
         if end_price:
             filter_params['price__lte'] = end_price
 
+        if start_year:
+            filter_params['car__year__gte'] = start_year
+
+        if end_year:
+            filter_params['car__year__lte'] = end_year
+
+        if start_mileage:
+            filter_params['car__mileage__gte'] = start_mileage
+
+        if end_mileage:
+            filter_params['car__mileage__lte'] = end_mileage
+
         if filter_params:
             ads = Ad.objects.filter(**filter_params)
 
     brands = Brand.objects.all()
+    models = Model.objects.all()
     favorite_ads = []
 
     if request.user.is_authenticated:
@@ -49,10 +75,17 @@ def buy_cars(request):
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
                'brands': brands,
+               'models': models,
                'favorite_ads': favorite_ads,
                'brand_name': brand_name,
+               'model_name': model_name,
                'start_price': start_price,
-               'end_price': end_price}
+               'end_price': end_price,
+               'start_year': start_year,
+               'end_year': end_year,
+               'start_mileage': start_mileage,
+               'end_mileage': end_mileage,
+               }
     return render(request, 'buy.html', context)
 
 

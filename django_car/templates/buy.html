@@ -18,24 +18,61 @@
             <div class="filter">
                 <form method="post" action="{% url 'buycar' %}">
                     {% csrf_token %}
-                    <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
-                        <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
-                               id="selectedBrandBtn"
-                               oninput="filterFunction(this.value)"
-                               value="{{ brand_name }}">
-                        <div class="dropdown-content">
-                            {% for brand in brands %}
-                                <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"
-                                   onclick="selectBrand(this)">{{ brand.name }}</a>
-                            {% endfor %}
+                    <div class="field">
+                        <p>Марка:</p>
+                        <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
+                            <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
+                                   id="selectedBrandBtn"
+                                   oninput="filterFunction(this.value)"
+                                   value="{{ brand_name }}">
+                            <div class="dropdown-content">
+                                {% for brand in brands %}
+                                    <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"
+                                       onclick="selectBrand(this)">{{ brand.name }}</a>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
 
                     <div class="field">
-                        <p>Минимальная цена:</p>
-                        <input type="number" name="start_price" placeholder="от" id="start_price" value="{{ start_price }}">
-                        <p>Максимальная цена:</p>
+                        <p>Модель:</p>
+                        <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
+                            <input type="text" name="selected_model_name" placeholder="Модель" class="dropbtn"
+                                   id="selectedModelBtn" disabled
+                                   oninput="filterModelFunction(this.value)" value="{{ model_name }}">
+                            <div class="dropdown-content" id="modelDropdown" data-brand-id="">
+                                {% for model in models %}
+                                    <a class="car-model" data-brand-id="{{ model.brand.id }}"
+                                       data-model="{{ model.name }}"
+                                       onclick="selectModel(this)">{{ model.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <span>Минимальная цена:</span>
+                        <input type="number" name="start_price" placeholder="от" id="start_price"
+                               value="{{ start_price }}">
+                        <span>Максимальная цена:</span>
                         <input type="number" name="end_price" placeholder="до" id="end_price" value="{{ end_price }}">
+                    </div>
+
+                    <div class="field">
+                        <span>Год от:</span>
+                        <input type="number" name="start_year" placeholder="от" id="start_year"
+                               value="{{ start_year }}">
+                        <span>Год до:</span>
+                        <input type="number" name="end_year" placeholder="до" id="end_year" value="{{ end_year }}">
+                    </div>
+
+                    <div class="field">
+                        <span>Пробег от:</span>
+                        <input type="number" name="start_mileage" placeholder="от" id="start_mileage"
+                               value="{{ start_mileage }}">
+                        <span>Пробег до:</span>
+                        <input type="number" name="end_mileage" placeholder="до" id="end_mileage"
+                               value="{{ end_mileage }}">
                     </div>
 
                     <button type="submit">
@@ -53,6 +90,8 @@
                         <div class="card-image">
                             {% if ad.images.all %}
                                 <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                            {% else %}
+                                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
                             {% endif %}
                         </div>
                         <div class="card-info">

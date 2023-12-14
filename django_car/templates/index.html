@@ -17,6 +17,8 @@
                 <div class="card-image">
                     {% if ad.images.all %}
                         <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                    {% else %}
+                        <img src="{% static 'кчау.jpg' %}" alt="Car Image">
                     {% endif %}
                 </div>
                 <div class="card-info">

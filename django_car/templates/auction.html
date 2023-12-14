@@ -21,6 +21,8 @@
                         <div class="card-image">
                             {% if auction.images.all %}
                                 <img src="{{ auction.images.all.0.image.url }}" alt="Car Image">
+                            {% else %}
+                                <img src="{% static 'кчау.jpg' %}" alt="Car Image">
                             {% endif %}
                         </div>
                         <div class="card-info">
@@ -41,11 +43,11 @@
                                     <p>Стартовая ставка:</p>
                                     <p>{{ auction.start_price }}</p>
                                     <p>Текущая ставка:</p>
-                                        {% if not auction.bid.amount %}
-                                            <p>-</p>
-                                        {% else %}
-                                            <p>{{ auction.bid.amount }}</p>
-                                        {% endif %}
+                                    {% if not auction.bid.amount %}
+                                        <p>-</p>
+                                    {% else %}
+                                        <p>{{ auction.bid.amount }}</p>
+                                    {% endif %}
                                 </div>
                                 <div class="car_short_info">
                                     <p>{{ auction.car.year }} г.</p>
