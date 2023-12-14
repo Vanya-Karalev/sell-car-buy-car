@@ -7,45 +7,56 @@
 {% endblock styles %}
 
 {% block content %}
-    <form method="post" action="{% url 'update_ad' ad_id=ad.id %}">
+    <form method="post" action="{% url 'update_ad' ad_id=ad.id %}" enctype="multipart/form-data">
         {% csrf_token %}
-        {#        <div class="column">#}
-        {#            <h2>Общая информация об объявлении:</h2>#}
-        {#            <div class="field">#}
-        {#                <a>Цена:</a>#}
-        {#                <input type="number" name="price" placeholder="цена" id="price" value="{{ ad.price }}">#}
-        {#            </div>#}
-        {##}
-        {#            <div class="field">#}
-        {#                <a>Описание:</a>#}
-        {#                <textarea name="description" placeholder="описание" id="description">{{ ad.description }}</textarea>#}
-        {#            </div>#}
-        {##}
-        {#                    <div class="field">#}
-        {#                        <a>Продвинуть объявление за доп. плату:</a>#}
-        {#                        <input type="checkbox" name="status" {% if ad.status %}checked{% endif %}>#}
-        {#                    </div>#}
-        {##}
-        {#            <div class="field" style="padding-top: 50px">#}
-        {#                <button type="submit" style="height: 50px; width: 200px">#}
-        {#                    Обновить данные#}
-        {#                </button>#}
-        {#            </div>#}
-        {#        </div>#}
 
         <div class="field">
             <p>Цена:</p>
             <input type="number" name="price" placeholder="Цена" id="price" value="{{ ad.price }}">
+            {% if error_price %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_price }}</span>
+            {% endif %}
         </div>
 
         <div class="field" style="align-items: start">
             <p>Описание:</p>
-            <textarea name="description" placeholder="Описание" id="description">{{ ad.description }}</textarea>
+            <textarea name="description" placeholder="Описание" id="description" maxlength="1000">{{ ad.description }}</textarea>
         </div>
 
         <div class="field">
+            <p id="photos_count">Выберите фотографии:</p>
+            <button class="upload_button" id="upload-avatar-btn" type="button">
+                Выбрать
+                <input type="file" id="upload-avatar-inp" name="images" accept="image/png, image/jpeg" multiple/>
+            </button>
+        </div>
+
+        <script>
+            document.getElementById('upload-avatar-btn').addEventListener("click", function () {
+                document.getElementById('upload-avatar-inp').click();
+            });
+            document.getElementById('upload-avatar-inp').addEventListener("change", function () {
+                var count = document.getElementById('upload-avatar-inp').files.length
+
+                if (count === 1) {
+                    document.getElementById('photos_count').innerText =
+                        '1 фотография выбрана';
+                } else if (count > 1 && count <= 4) {
+                    document.getElementById('photos_count').innerText =
+                        count + ' фотографии выбрано';
+                } else if (count > 20 && count % 10 && count % 10 <= 4) {
+                    document.getElementById('photos_count').innerText =
+                        count + ' фотографии выбрано';
+                } else {
+                    document.getElementById('photos_count').innerText =
+                        count + ' фотографий выбрано';
+                }
+            });
+        </script>
+
+        <div class="field">
             <a>Продвинуть объявление <br>за доп. плату:</a>
-            <input type="checkbox" name="status" {% if ad.status %}checked{% endif %} style="margin-left: -105px">
+            <input type="checkbox" name="status" {% if ad.status %}checked{% endif %} style="margin-left: -105px; margin-top: 10px">
         </div>
 
         <div class="field" style="padding-top: 50px">

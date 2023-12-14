@@ -14,18 +14,30 @@
             <div class="field">
                 <p>Почта:</p>
                 <input type="text" name="email" placeholder="почта" value="{{ request.user.email }}">
+                {% if error_email %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_email }}</span>
+                {% endif %}
             </div>
             <div class="field">
                 <p>Имя:</p>
                 <input type="text" name="first_name" placeholder="имя" value="{{ request.user.first_name }}">
+                {% if error_first_name %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_first_name }}</span>
+                {% endif %}
             </div>
             <div class="field">
                 <p>Фамилия:</p>
                 <input type="text" name="last_name" placeholder="фамилия" value="{{ request.user.last_name }}">
+                {% if error_last_name %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_last_name }}</span>
+                {% endif %}
             </div>
             <div class="field">
                 <p>Номер телефона:</p>
                 <input type="text" name="phone" placeholder="телефон" value="{{ request.user.phone }}">
+                {% if error_phone %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_phone }}</span>
+                {% endif %}
             </div>
         </div>
         <div class="field" style="padding-top: 50px">

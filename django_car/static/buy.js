@@ -1,8 +1,9 @@
 var selectBrandId;
+
 // brand
 function toggleDropdown() {
-        var dropdown = document.querySelector('.dropdown_brand');
-        dropdown.classList.toggle('active');
+    var dropdown = document.querySelector('.dropdown_brand');
+    dropdown.classList.toggle('active');
 }
 
 function filterFunction() {
@@ -40,8 +41,7 @@ function selectBrand(element) {
 }
 
 
-
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     var dropdownContainer = document.getElementById('dropdownContainer');
     if (!dropdownContainer.contains(event.target)) {
         var dropdown = document.querySelector('.dropdown_brand');

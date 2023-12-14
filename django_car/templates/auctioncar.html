@@ -70,21 +70,31 @@
                     {% endfor %}
                     <p>Цвет: {{ auction.car.color }}</p>
                     {% if request.user.is_authenticated %}
-                        {% if parsed_date|date:"Y-m-d\TH:i" < auction.end_date|date:"Y-m-d\TH:i" %}
+                        {% if parsed_date|date:"Y-m-d\TH:i:s" < auction.start_date|date:"Y-m-d\TH:i:s" %}
                             <p>Дата начала аукциона: {{ auction.start_date }}</p>
                             <p>Дата конца аукциона: {{ auction.end_date }}</p>
                             <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
                             <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
-                            <label>Введите сумму ставки:</label>
-                            <input type="number" name="bid">
-                            <button type="submit">Сделать ставку</button>
                         {% else %}
-                            <p>Дата начала аукциона: {{ auction.start_date }}</p>
-                            <p>Дата конца аукциона: {{ auction.end_date }}</p>
-                            <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
-                            <p>Выигрышная ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
-                            <h4>Продавец: {{ auction.user.first_name }}</h4>
-                            <h4>Телефон: {{ auction.user.phone }}</h4>
+                            {% if parsed_date|date:"Y-m-d\TH:i" < auction.end_date|date:"Y-m-d\TH:i" %}
+                                <p>Дата начала аукциона: {{ auction.start_date }}</p>
+                                <p>Дата конца аукциона: {{ auction.end_date }}</p>
+                                <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
+                                <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
+                                <label>Введите сумму ставки:</label>
+                                <input type="number" name="bid" value="{{ bid }}">
+                                <button type="submit">Сделать ставку</button>
+                                {% if error_bid %}
+                                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_bid }}</span>
+                                {% endif %}
+                            {% else %}
+                                <p>Дата начала аукциона: {{ auction.start_date }}</p>
+                                <p>Дата конца аукциона: {{ auction.end_date }}</p>
+                                <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
+                                <p>Выигрышная ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
+                                <h4>Продавец: {{ auction.user.first_name }}</h4>
+                                <h4>Телефон: {{ auction.user.phone }}</h4>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </form>

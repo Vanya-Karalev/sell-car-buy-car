@@ -24,19 +24,15 @@ function selectBrand(element) {
     selectedBrandBtn.value = element.getAttribute("data-brand");
     selectBrandId = element.getAttribute("data-brand-id");
 
-    // Update the data-brand-id attribute of the model dropdown
     var modelDropdown = document.getElementById("modelDropdown");
     modelDropdown.setAttribute("data-brand-id", selectBrandId);
 
-    // Enable the model dropdown
     var selectedModelBtn = document.getElementById("selectedModelBtn");
     selectedModelBtn.disabled = false;
 
-    // Clear the selected model
     selectedModelBtn.value = "";
 
-    filterModels(); // Call a function to filter models when a brand is selected
-    dropdown.classList.remove('active');
+    filterModels();
 }
 
 document.addEventListener('click', function(event) {
@@ -66,12 +62,8 @@ function filterModels() {
 
 // model
 function toggleModelDropdown() {
-    if (!selectBrandId) {
-        return;
-    } else {
-        var dropdown = document.querySelector('.dropdown_model');
+    var dropdown = document.querySelector('.dropdown_model');
         dropdown.classList.toggle('active');
-    }
 }
 
 
@@ -93,7 +85,6 @@ function filterModelFunction() {
 function selectModel(element) {
      var selectedBrandBtn = document.getElementById("selectedModelBtn");
      selectedBrandBtn.value = element.getAttribute("data-model");
-     dropdown.classList.remove('active');
 }
 
 document.addEventListener('click', function(event) {

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Auction, Bid
@@ -57,7 +57,7 @@ def buy_cars(request):
 
 
 def auction(request):
-    date = datetime.now()
+    date = datetime.now() + timedelta(hours=3)
     date_string = date.strftime("%Y-%m-%dT%H:%M")
     parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
     auctions = Auction.objects.filter(end_date__gt=parsed_date)
@@ -72,24 +72,10 @@ def car_info(request, ad_id):
 
 
 def car_info_auction(request, auction_id):
-    date = datetime.now()
+    date = datetime.now() + timedelta(hours=3)
     date_string = date.strftime("%Y-%m-%dT%H:%M")
     parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
     auction = get_object_or_404(Auction, id=auction_id)
-    if request.method == 'POST':
-        current_bid = request.POST.get('bid')
-        user = request.user
-        date = datetime.now()
-        date_string = date.strftime("%Y-%m-%dT%H:%M")
-        parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
-        bid = Bid.objects.create(
-            user=user,
-            amount=current_bid,
-            date=parsed_date
-        )
-        auction.bid = bid
-        auction.save()
-        return redirect('carinfoauc', auction_id=auction_id)
     max_bid = 0
     if auction.bid:
         bids = Bid.objects.filter(id=auction.bid.id)
@@ -99,6 +85,27 @@ def car_info_auction(request, auction_id):
                     max_bid = bid.amount
         else:
             max_bid = 0
+    if request.method == 'POST':
+        current_bid = request.POST.get('bid')
+        user = request.user
+        if current_bid == '' or current_bid < 1 or current_bid < max_bid or current_bid < auction.start_price:
+            error_current_bid = 'Укажите верную ставку'
+            values = {'auction': auction,
+                      'max_bid': max_bid,
+                      'parsed_date': parsed_date,
+                      'current_bid': current_bid,
+                      'error_current_bid': error_current_bid}
+            return render(request, 'auctioncar.html', values)
+        else:
+            bid = Bid.objects.create(
+            user=user,
+            amount=current_bid,
+            date=parsed_date
+            )
+            auction.bid = bid
+            auction.save()
+            return redirect('carinfoauc', auction_id=auction_id)
+
     context = {'auction': auction,
                'max_bid': max_bid,
                'parsed_date': parsed_date}

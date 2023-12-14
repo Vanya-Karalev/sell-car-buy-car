@@ -19,19 +19,17 @@
                 <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
                     <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
                            id="selectedBrandBtn"
-                           oninput="filterFunction(this.value)">
+                           oninput="filterFunction(this.value)"
+                           value="{{ brand_name }}">
                     <div class="dropdown-content">
                         {% for brand in brands %}
                             <a class="car-brand" data-brand-id="{{ brand.id }}" data-brand="{{ brand.name }}"
                                onclick="selectBrand(this)">{{ brand.name }}</a>
                         {% endfor %}
                     </div>
-                    <div class="alert alert-danger" role="alert">
-                        {% if values.error_brand_name %}
-                            {{ values.error_brand_name }}
-                        {% endif %}
-                    </div>
-
+                    {% if error_brand_name %}
+                        <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_brand_name }}</span>
+                    {% endif %}
                 </div>
             </div>
 
@@ -39,20 +37,26 @@
                 <p>Модель:</p>
                 <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
                     <input type="text" name="selected_model_name" placeholder="Модель" class="dropbtn"
-                           id="selectedModelBtn"
-                           oninput="filterModelFunction(this.value)" disabled>
+                           id="selectedModelBtn" disabled
+                           oninput="filterModelFunction(this.value)" value="{{ model_name }}">
                     <div class="dropdown-content" id="modelDropdown" data-brand-id="">
                         {% for model in models %}
                             <a class="car-model" data-brand-id="{{ model.brand.id }}" data-model="{{ model.name }}"
                                onclick="selectModel(this)">{{ model.name }}</a>
                         {% endfor %}
                     </div>
+                    {% if error_model_name %}
+                        <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_model_name }}</span>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="field">
-                <p>Пробег:</p>
-                <input type="text" name="mileage" placeholder="Пробег" id="mileage">
+                <p>Пробег (в км.):</p>
+                <input type="number" name="mileage" placeholder="Пробег" id="mileage" value="{{ mileage }}">
+                {% if error_mileage %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_mileage }}</span>
+                {% endif %}
             </div>
 
             <div class="field">
@@ -85,7 +89,10 @@
 
             <div class="field">
                 <p>VIN номер:</p>
-                <input type="text" name="vin" placeholder="VIN" id="vin">
+                <input type="text" name="vin" placeholder="VIN" id="vin" value="{{ vin }}">
+                {% if error_vin %}
+                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_vin }}</span>
+                {% endif %}
             </div>
         </div>
         <h2>Двигатель:</h2>
@@ -102,27 +109,43 @@
 
         <div class="field">
             <p>Лошадиные силы:</p>
-            <input type="number" name="horsepower" placeholder="Лошадиные силы" id="horsepower">
+            <input type="number" name="horsepower" placeholder="Лошадиные силы" id="horsepower"
+                   value="{{ horsepower }}">
+            {% if error_horsepower %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_horsepower }}</span>
+            {% endif %}
         </div>
 
         <div class="field">
             <p>Объем двигателя:</p>
-            <input type="number" name="capacity" placeholder="Объем двигателя" id="capacity">
+            <input type="text" name="capacity" placeholder="Объем двигателя" id="capacity" value="{{ capacity }}">
+            {% if error_capacity %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_capacity }}</span>
+            {% endif %}
         </div>
 
         <div class="field">
             <p>Крутящий момент:</p>
-            <input type="number" name="torque" placeholder="Крутящий момент" id="torque">
+            <input type="number" name="torque" placeholder="Крутящий момент" id="torque" value="{{ torque }}">
+            {% if error_torque %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_torque }}</span>
+            {% endif %}
         </div>
 
         <div class="field">
             <p>Расход топлива:</p>
-            <input type="number" name="fuelconsuption" placeholder="Расход" id="fuelconsuption">
+            <input type="text" name="fuelconsuption" placeholder="Расход" id="fuelconsuption" value="{{ fuelconsuption }}">
+            {% if error_fuelconsuption %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_fuelconsuption }}</span>
+            {% endif %}
         </div>
 
         <div class="field">
             <p>Год выпуска:</p>
-            <input type="text" name="year" placeholder="Год" id="mileage">
+            <input type="number" name="year" placeholder="Год" id="mileage" value="{{ year }}">
+            {% if error_year %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_year }}</span>
+            {% endif %}
         </div>
         <h2>Подвеска:</h2>
         <div class="field">
@@ -142,8 +165,11 @@
         </div>
 
         <div class="field">
-            <p>Клиренс:</p>
-            <input type="number" name="clearance" placeholder="Клиренс" id="clearance">
+            <p>Клиренс (в см.):</p>
+            <input type="text" name="clearance" placeholder="Клиренс" id="clearance" value="{{ clearance }}">
+            {% if error_clearance %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_clearance }}</span>
+            {% endif %}
         </div>
         <h2>Коробка передач:</h2>
         <div class="field">
@@ -159,17 +185,23 @@
 
         <div class="field">
             <p>Число передач:</p>
-            <input type="number" name="gearnumber" placeholder="Число передач" id="gearnumber">
+            <input type="number" name="gearnumber" placeholder="Число передач" id="gearnumber" value="{{ gearnumber }}">
+            {% if error_gearnumber %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_gearnumber }}</span>
+            {% endif %}
         </div>
 
         <div class="field">
             <p>Цена:</p>
-            <input type="number" name="price" placeholder="Цена" id="price" value="{{ values.price }}">
+            <input type="number" name="price" placeholder="Цена" id="price" value="{{ price }}">
+            {% if error_price %}
+                <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_price }}</span>
+            {% endif %}
         </div>
 
         <div class="field" style="align-items: start">
             <p>Описание:</p>
-            <textarea name="description" placeholder="Описание" id="description"></textarea>
+            <textarea name="description" placeholder="Описание" id="description" maxlength="1000">{{ description }}</textarea>
         </div>
 
         <div class="field">

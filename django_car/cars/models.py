@@ -89,7 +89,7 @@ class Ad(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
     car = models.ForeignKey(Car, on_delete=models.CASCADE, db_column='CarID')
     price = models.IntegerField(db_column='Price')
-    description = models.CharField(db_column='Description')
+    description = models.CharField(db_column='Description', blank=True, null=True)
     status = models.BooleanField(db_column='Status', default='False')
     images = models.ManyToManyField(Image)
 
@@ -126,7 +126,7 @@ class Auction(models.Model):
     start_price = models.IntegerField(db_column='StartPrice')
     start_date = models.DateTimeField(db_column='StartDate')
     end_date = models.DateTimeField(db_column='EndDate')
-    description = models.CharField(db_column='Description')
+    description = models.CharField(db_column='Description', blank=True, null=True)
     bid = models.ForeignKey(Bid, on_delete=models.DO_NOTHING, db_column='BidID', blank=True, null=True)
     images = models.ManyToManyField(Image)
 
