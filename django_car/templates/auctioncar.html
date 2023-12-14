@@ -69,17 +69,24 @@
                         <p>Клиренс: {{ suspension.clearance }}</p>
                     {% endfor %}
                     <p>Цвет: {{ auction.car.color }}</p>
-                    <p>Дата начала аукциона: {{ auction.start_date }}</p>
-                    <p>Дата конца аукциона: {{ auction.end_date }}</p>
-                    <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
-                    <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
                     {% if request.user.is_authenticated %}
-                        <label>Введите сумму ставки:</label>
-                        <input type="number" name="bid">
-                        <button type="submit">Сделать ставку</button>
+                        {% if parsed_date|date:"Y-m-d\TH:i" < auction.end_date|date:"Y-m-d\TH:i" %}
+                            <p>Дата начала аукциона: {{ auction.start_date }}</p>
+                            <p>Дата конца аукциона: {{ auction.end_date }}</p>
+                            <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
+                            <p>Текущая ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
+                            <label>Введите сумму ставки:</label>
+                            <input type="number" name="bid">
+                            <button type="submit">Сделать ставку</button>
+                        {% else %}
+                            <p>Дата начала аукциона: {{ auction.start_date }}</p>
+                            <p>Дата конца аукциона: {{ auction.end_date }}</p>
+                            <p>Стартовая цена аукциона: {{ auction.start_price }}</p>
+                            <p>Выигрышная ставка: {% if max_bid %}{{ max_bid }}{% else %}-{% endif %}</p>
+                            <h4>Продавец: {{ auction.user.first_name }}</h4>
+                            <h4>Телефон: {{ auction.user.phone }}</h4>
+                        {% endif %}
                     {% endif %}
-                    {#                <h2>Продавец: {{ auction.user.first_name }}</h2>#}
-                    {#                <h2>Телефон: {{ auction.user.phone }}</h2>#}
                 </form>
             </div>
         </div>

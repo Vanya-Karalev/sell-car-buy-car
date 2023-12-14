@@ -3,11 +3,12 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Image, Auction
+from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Image, Auction, Bid
 from users.models import CustomUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
+from datetime import datetime
 from django.utils import timezone
 
 
@@ -173,6 +174,17 @@ def my_favorite_ads(request):
                'favorite_ads': favorite_ads,
                'favoritee_ads': favoritee_ads}
     return render(request, 'myfavoriteads.html', context)
+
+
+def my_auctions(request):
+    user = CustomUser.objects.get(pk=request.user.id)
+    date = datetime.now()
+    date_string = date.strftime("%Y-%m-%dT%H:%M")
+    parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
+    bid = Bid.objects.filter(user=user).last()
+    auctions = Auction.objects.filter(end_date__lt=parsed_date, bid=bid)
+    context = {'auctions': auctions}
+    return render(request, 'myauctions.html', context)
 
 
 @login_required

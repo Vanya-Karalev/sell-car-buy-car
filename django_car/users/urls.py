@@ -9,6 +9,7 @@ urlpatterns = [
     path('createauction/', views.create_auction, name='createauction'),
     path('myads/', views.my_ads, name='myads'),
     path('myfavoriteads/', views.my_favorite_ads, name='myfavoriteads'),
+    path('myauctions/', views.my_auctions, name='myauctions'),
     path('myfavoriteads/<int:ad_id>', views.favorite_ads, name='favoriteads'),
     path('myads/<int:ad_id>/', views.delete_my_ad, name='delete_ad'),
     path('myads/<int:ad_id>/edit/', views.edit_my_ad, name='edit_ad'),

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'buy.css' %}"/>
+    <script src="{% static 'buy.js' %}"></script>
+{% endblock styles %}
+
+{% block content %}
+    <body>
+
+    <div class="row">
+        <div class="ads_column">
+            <div class="container-name">
+                <a><b>Мои выигранные аукционы</b></a>
+            </div>
+
+            <div class="container">
+                {% for auction in auctions %}
+                    <div class="card">
+                        <div class="card-image">
+                            {% if auction.images.all %}
+                                <img src="{{ auction.images.all.0.image.url }}" alt="Car Image">
+                            {% endif %}
+                        </div>
+                        <div class="card-info">
+                            <div class="card-info_title" style="margin-bottom: 10px">
+                                <a href="{% url 'carinfoauc' auction_id=auction.id %}"
+                                   class="car_name">{{ auction.car.brand.name }} {{ auction.car.model.name }}</a>
+                            </div>
+                            <div class="card-info_up" style="height: 100px;">
+                                <div class="car_short_info" style="">
+                                    <p>Дата начала аукциона:</p>
+                                    <p>{{ auction.start_date }}</p>
+                                    <p>Дата конца аукциона:</p>
+                                    <p>{{ auction.end_date }}</p>
+                                </div>
+                                <div class="car_short_info">
+                                    <p>Стартовая ставка:</p>
+                                    <p>{{ auction.start_price }}</p>
+                                    <p>Последняя ставка:</p>
+                                        {% if not auction.bid.amount %}
+                                            <p>-</p>
+                                        {% else %}
+                                            <p>{{ auction.bid.amount }}</p>
+                                        {% endif %}
+                                </div>
+                                <div class="car_short_info">
+                                    <p>{{ auction.car.year }} г.</p>
+                                    {% for engine in auction.car.engines.all %}
+                                        <p>{{ engine.capacity }} л, {{ engine.type|lower }}</p>
+                                    {% endfor %}
+                                    <p>{{ auction.car.body_type|lower }}</p>
+                                    <p>{{ auction.car.mileage }} км</p>
+                                </div>
+
+                            </div>
+                            <div class="card-info_down">
+                                <p class="car_description">{{ auction.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="reklama_column">
+            <img src='https://exiterra.ru/images/sst/mem5.webp'/>
+        </div>
+    </div>
+
+    </body>
+{% endblock content %}

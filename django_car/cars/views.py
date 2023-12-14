@@ -57,8 +57,10 @@ def buy_cars(request):
 
 
 def auction(request):
-    auctions = Auction.objects.all()
-
+    date = datetime.now()
+    date_string = date.strftime("%Y-%m-%dT%H:%M")
+    parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
+    auctions = Auction.objects.filter(end_date__gt=parsed_date)
     context = {'auctions': auctions}
     return render(request, 'auction.html', context)
 
@@ -70,6 +72,9 @@ def car_info(request, ad_id):
 
 
 def car_info_auction(request, auction_id):
+    date = datetime.now()
+    date_string = date.strftime("%Y-%m-%dT%H:%M")
+    parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
     auction = get_object_or_404(Auction, id=auction_id)
     if request.method == 'POST':
         current_bid = request.POST.get('bid')
@@ -95,7 +100,8 @@ def car_info_auction(request, auction_id):
         else:
             max_bid = 0
     context = {'auction': auction,
-               'max_bid': max_bid}
+               'max_bid': max_bid,
+               'parsed_date': parsed_date}
     return render(request, 'auctioncar.html', context)
 
 
