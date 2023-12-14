@@ -9,7 +9,9 @@
 {% block content %}
     <form method="post" action="{% url 'createad' %}" enctype="multipart/form-data">
         {% csrf_token %}
-
+        <div class="container-name">
+            <h1>Разместить объявление</h1>
+        </div>
         <div class="column">
             <h2>Общая информация:</h2>
             <div class="field">
@@ -24,6 +26,12 @@
                                onclick="selectBrand(this)">{{ brand.name }}</a>
                         {% endfor %}
                     </div>
+                    <div class="alert alert-danger" role="alert">
+                        {% if values.error_brand_name %}
+                            {{ values.error_brand_name }}
+                        {% endif %}
+                    </div>
+
                 </div>
             </div>
 
@@ -156,7 +164,7 @@
 
         <div class="field">
             <p>Цена:</p>
-            <input type="number" name="price" placeholder="Цена" id="price">
+            <input type="number" name="price" placeholder="Цена" id="price" value="{{ values.price }}">
         </div>
 
         <div class="field" style="align-items: start">
@@ -177,23 +185,20 @@
                 document.getElementById('upload-avatar-inp').click();
             });
             document.getElementById('upload-avatar-inp').addEventListener("change", function () {
-                var count =  document.getElementById('upload-avatar-inp').files.length
+                var count = document.getElementById('upload-avatar-inp').files.length
 
                 if (count === 1) {
                     document.getElementById('photos_count').innerText =
-                     '1 фотография выбрана';
-                }
-                else if (count > 1 && count <= 4) {
+                        '1 фотография выбрана';
+                } else if (count > 1 && count <= 4) {
                     document.getElementById('photos_count').innerText =
-                     count + ' фотографии выбрано';
-                }
-                else if (count > 20 && count%10 && count%10 <= 4) {
+                        count + ' фотографии выбрано';
+                } else if (count > 20 && count % 10 && count % 10 <= 4) {
                     document.getElementById('photos_count').innerText =
-                     count + ' фотографии выбрано';
-                }
-                else {
+                        count + ' фотографии выбрано';
+                } else {
                     document.getElementById('photos_count').innerText =
-                     count + ' фотографий выбрано';
+                        count + ' фотографий выбрано';
                 }
             });
         </script>

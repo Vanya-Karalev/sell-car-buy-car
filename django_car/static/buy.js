@@ -64,3 +64,9 @@ function filterModels() {
         }
     }
 }
+
+function clearFields() {
+    document.getElementById('selectedBrandBtn').value = '';
+    document.getElementById('start_price').value = '';
+    document.getElementById('end_price').value = '';
+}

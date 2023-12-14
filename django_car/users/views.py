@@ -7,7 +7,7 @@ from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favo
 from users.models import CustomUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.utils import timezone
 
 
@@ -58,6 +58,10 @@ def LogoutPage(request):
 
 
 def create_ad(request):
+    brands = Brand.objects.all()
+    models = Model.objects.all()
+    context = {'brands': brands,
+               'models': models}
     if request.method == 'POST':
         brand_name = request.POST.get('selected_brand_name')
         model_name = request.POST.get('selected_model_name')
@@ -79,46 +83,49 @@ def create_ad(request):
         description = request.POST.get('description')
         images = request.FILES.getlist('images')
 
-        # Step 1: Retrieve or create related instances
-        brand, created = Brand.objects.get_or_create(name=brand_name)
-        model, created = Model.objects.get_or_create(name=model_name, brand=brand)
-        engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
-                                                       torque=torque, fuel_consuption=fuelconsuption)
-        gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
-        suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
-        user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
+        if brand_name == '':
+            error_brand_name = 'Выберите бренд автомобиля'
+            values = {'price': price,
+                      'error_brand_name': error_brand_name}
+            return render(request, 'createad.html', values)
+        else:
 
-        # Step 2: Create a new Car instance
-        car = Car.objects.create(
-            brand=brand,
-            model=model,
-            mileage=mileage,
-            body_type=bodytype,
-            year=year,
-            color=color,
-            vin=vin,
-        )
-        car.engines.add(engine)
-        car.gearboxes.add(gearbox)
-        car.suspensions.add(suspension)
+            # # Step 1: Retrieve or create related instances
+            # brand, created = Brand.objects.get_or_create(name=brand_name)
+            # model, created = Model.objects.get_or_create(name=model_name, brand=brand)
+            # engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
+            #                                                torque=torque, fuel_consuption=fuelconsuption)
+            # gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
+            # suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
+            # user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
+            #
+            # # Step 2: Create a new Car instance
+            # car = Car.objects.create(
+            #     brand=brand,
+            #     model=model,
+            #     mileage=mileage,
+            #     body_type=bodytype,
+            #     year=year,
+            #     color=color,
+            #     vin=vin,
+            # )
+            # car.engines.add(engine)
+            # car.gearboxes.add(gearbox)
+            # car.suspensions.add(suspension)
+            #
+            # # Step 3: Create a new Ad instance
+            # ad = Ad.objects.create(
+            #     user=user,
+            #     car=car,
+            #     price=price,
+            #     description=description,
+            # )
+            #
+            # for image in images:
+            #     image_instance = Image.objects.create(image=image)
+            #     ad.images.add(image_instance)
 
-        # Step 3: Create a new Ad instance
-        ad = Ad.objects.create(
-            user=user,
-            car=car,
-            price=price,
-            description=description,
-        )
-
-        for image in images:
-            image_instance = Image.objects.create(image=image)
-            ad.images.add(image_instance)
-
-        return redirect('index')
-    brands = Brand.objects.all()
-    models = Model.objects.all()
-    context = {'brands': brands,
-               'models': models}
+            return redirect('index')
     return render(request, 'createad.html', context)
 
 

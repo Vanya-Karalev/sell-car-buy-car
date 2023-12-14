@@ -6,40 +6,6 @@
     <script src="{% static 'buy.js' %}"></script>
 {% endblock styles %}
 
-{#{% block content %}#}
-{#    <body>#}
-{##}
-{#    <div class="container-name">#}
-{#        <a><b>Мои объявления</b></a>#}
-{#    </div>#}
-{##}
-{#    <div class="container">#}
-{#        {% for ad in ads %}#}
-{#            <div class="card">#}
-{#                <div class="card-image">#}
-{#                    <img src="{% static 'кчау.jpg' %}" alt="Car Image">#}
-{#                </div>#}
-{#                <div class="card-info">#}
-{#                    <h2></h2>#}
-{#                    <p>Год выпуска: {{ ad.car.year }} </p>#}
-{#                    <p>Цена: ${{ ad.price }}</p>#}
-{#                    <a type="button" href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>#}
-{#                    <form method="post" action="{% url 'delete_ad' ad_id=ad.id %}" style="display: inline;">#}
-{#                        {% csrf_token %}#}
-{#                        <button type="submit">Удалить</button>#}
-{#                    </form>#}
-{#                    <form method="post" action="{% url 'edit_ad' ad_id=ad.id %}" style="display: inline;">#}
-{#                        {% csrf_token %}#}
-{#                        <button type="submit">Редактировать</button>#}
-{#                    </form>#}
-{#                </div>#}
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
-{##}
-{#</body>#}
-{#{% endblock content %}#}
-
 {% block content %}
     <body>
 

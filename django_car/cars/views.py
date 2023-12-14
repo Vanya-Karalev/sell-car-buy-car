@@ -19,17 +19,40 @@ def get_cars(request):
 
 def buy_cars(request):
     ads = Ad.objects.all()
+    brand_name = ''
+    start_price = ''
+    end_price = ''
+    if request.method == 'POST':
+        brand_name = request.POST.get('selected_brand_name')
+        start_price = request.POST.get('start_price')
+        end_price = request.POST.get('end_price')
+
+        filter_params = {}
+
+        if brand_name:
+            filter_params['car__brand__name'] = brand_name
+
+        if start_price:
+            filter_params['price__gte'] = start_price
+
+        if end_price:
+            filter_params['price__lte'] = end_price
+
+        if filter_params:
+            ads = Ad.objects.filter(**filter_params)
+
     brands = Brand.objects.all()
     favorite_ads = []
 
     if request.user.is_authenticated:
         user = CustomUser.objects.get(pk=request.user.id)
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
-    # user = CustomUser.objects.get(pk=request.user.id)
-    # favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
                'brands': brands,
-               'favorite_ads': favorite_ads}
+               'favorite_ads': favorite_ads,
+               'brand_name': brand_name,
+               'start_price': start_price,
+               'end_price': end_price}
     return render(request, 'buy.html', context)
 
 
