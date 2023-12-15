@@ -75,7 +75,7 @@ class Car(models.Model):
         db_table = 'Car'
 
     def __str__(self):
-        return self.vin
+        return self.pk
 
 
 class Image(models.Model):
@@ -97,7 +97,7 @@ class Ad(models.Model):
         db_table = 'Ad'
 
     def __str__(self):
-        return self.price
+        return self.pk
 
 
 class Favorites(models.Model):
