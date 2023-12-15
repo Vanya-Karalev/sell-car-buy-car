@@ -314,10 +314,12 @@ def update_my_ad(request, ad_id):
         else:
             ad.price = price
             ad.description = description
-            ad.images.clear()
-            for image in images:
-                image_instance = Image.objects.create(image=image)
-                ad.images.add(image_instance)
+            if any(not image for image in images):
+                ad.images.clear()
+            else:
+                for image in images:
+                    image_instance = Image.objects.create(image=image)
+                    ad.images.add(image_instance)
             ad.status = status == 'on'
             ad.save()
             return redirect('myads')

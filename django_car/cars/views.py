@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
-from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Auction, Bid
+from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Auction, Bid, Image
 from users.models import CustomUser
 from django.http import JsonResponse
+from django.db.models import F
+from django.db.models import OuterRef, Subquery
 
 
 def get_cars(request):
@@ -23,8 +25,18 @@ def get_cars(request):
 def load_more(request):
     total_item = int(request.GET.get('total_item'))
     limit = 1
-    ads = list(Ad.objects.filter(status='True').values()[total_item:total_item + limit])
-    data = {'ads': ads}
+
+    subquery = Image.objects.filter(ad=OuterRef('id')).values('image').order_by('id')[:1]
+
+    ads = Ad.objects.filter(status='True').select_related('car__brand', 'car__model').annotate(
+        brand_name=F('car__brand__name'),
+        model_name=F('car__model__name'),
+        year=F('car__year'),
+        mileage=F('car__mileage'),
+        image=Subquery(subquery)
+    ).values('id', 'price', 'brand_name', 'model_name', 'year', 'mileage', 'image')[total_item:total_item + limit]
+
+    data = {'ads': list(ads)}
     return JsonResponse(data)
 
 

@@ -6,8 +6,11 @@
 
 .container {
     margin-left: 60px;
-    display: flex;
-    flex-wrap: wrap;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: auto auto;
 }
 
 .card {
