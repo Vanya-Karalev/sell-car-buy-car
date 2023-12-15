@@ -1,14 +1,9 @@
-document.addEventListener('DOMContentLoaded', function () {
-    var dropdownItems = document.querySelectorAll('.dropdown ul > li');
-    var dropdownSpan = document.querySelector('.dropdown > span');
-
-    dropdownItems.forEach(function (item) {
-        item.addEventListener('click', function () {
-            dropdownItems.forEach(function (item) {
-                item.classList.remove('drop-selected');
-            });
-            this.classList.toggle('drop-selected');
-            dropdownSpan.textContent = this.getAttribute('val');
-        });
+$(document ).ready(function() {
+  $('.dropdown ul>li').click(function(){
+    $('.dropdown ul>li').each(function(){
+      $(this).removeClass('drop-selected');
     });
+    $(this).toggleClass('drop-selected');
+    $('.dropdown>span').text($(this).attr("val"))
+  });
 });

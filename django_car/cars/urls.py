@@ -8,4 +8,5 @@ urlpatterns = [
     path('auction/<int:auction_id>', views.car_info_auction, name='carinfoauc'),
     path('aboutus/', views.about_us, name="aboutus"),
     path('', views.get_cars, name="index"),
+    path('load/', views.load_more, name='load')
 ]

@@ -20,6 +20,8 @@
                         {% for img in ad.images.all %}
                             <img src="{{ img.image.url }}" alt="Car Image">
                         {% endfor %}
+                    {% else %}
+                        <img src="{% static 'кчау.jpg' %}" alt="Car Image">
                     {% endif %}
 
                 </div>

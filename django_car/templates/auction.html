@@ -15,6 +15,81 @@
                 <a><b>Аукционы</b></a>
             </div>
 
+            <div class="filter">
+                <form method="post" action="{% url 'auction' %}">
+                    {% csrf_token %}
+                    <div class="filter_row" style="padding-left: 7px;">
+                        <div class="filter_column">
+                            <div class="field">
+                                <div class="dropdown_brand" onclick="toggleDropdown()" id="dropdownContainer">
+                                    <input type="text" name="selected_brand_name" placeholder="Марка" class="dropbtn"
+                                           id="selectedBrandBtn"
+                                           oninput="filterFunction(this.value)"
+                                           value="{{ brand_name }}">
+                                    <div class="dropdown-content">
+                                        {% for brand in brands %}
+                                            <a class="car-brand" data-brand-id="{{ brand.id }}"
+                                               data-brand="{{ brand.name }}"
+                                               onclick="selectBrand(this)">{{ brand.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <input type="number" name="start_year" placeholder="Год от" id="start_year"
+                                       value="{{ start_year }}" class="left">
+                                <input type="number" name="end_year" placeholder="до" id="end_year"
+                                       value="{{ end_year }}" class="right">
+                            </div>
+                        </div>
+
+                        <div class="filter_column">
+                            <div class="field">
+                                <div class="dropdown_model" onclick="toggleModelDropdown()" id="dropdownModelContainer">
+                                    <input type="text" name="selected_model_name" placeholder="Модель" class="dropbtn"
+                                           id="selectedModelBtn" disabled
+                                           oninput="filterModelFunction(this.value)" value="{{ model_name }}">
+                                    <div class="dropdown-content" id="modelDropdown" data-brand-id="">
+                                        {% for model in models %}
+                                            <a class="car-model" data-brand-id="{{ model.brand.id }}"
+                                               data-model="{{ model.name }}"
+                                               onclick="selectModel(this)">{{ model.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <input type="number" name="start_mileage" placeholder="Пробег от" id="start_mileage"
+                                       value="{{ start_mileage }}" class="left">
+                                <input type="number" name="end_mileage" placeholder="до" id="end_mileage"
+                                       value="{{ end_mileage }}" class="right">
+                            </div>
+                        </div>
+
+                        <div class="filter_column">
+                            <div class="field">
+                                <input type="number" name="start_price" placeholder="Цена от" id="start_price"
+                                       value="{{ start_price }}" class="left" style="margin-top: 10px">
+                                <input type="number" name="end_price" placeholder="до" id="end_price"
+                                       value="{{ end_price }}" class="right" style="margin-top: 10px">
+                            </div>
+                            <div class="field">
+                                <button type="submit"
+                                        style="border-bottom-left-radius: 5px; border-top-left-radius: 5px; margin-left: 5px;">
+                                    Показать
+                                </button>
+                                <button onclick="clearFields()"
+                                        style="border-bottom-right-radius: 5px; border-top-right-radius: 5px;">
+                                    Сбросить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="container">
                 {% for auction in auctions %}
                     <div class="card">

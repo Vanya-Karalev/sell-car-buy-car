@@ -3,6 +3,17 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'styles.css' %}"/>
+    {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"#}
+    {#          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">#}
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
 {% endblock styles %}
 
 {% block content %}
@@ -12,24 +23,117 @@
     </div>
 
     <div class="container">
-        {% for ad in ads %}
+        <div class="content">
+            {% for ad in ads %}
+                <div class="card">
+                    <div class="card-image">
+                        {% if ad.images.all %}
+                            <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
+                        {% else %}
+                            <img src="{% static 'кчау.jpg' %}" alt="Car Image">
+                        {% endif %}
+                    </div>
+                    <div class="card-info">
+                        <h2>{{ ad.car.brand.name }} {{ ad.car.model.name }}</h2>
+                        <p>Год выпуска: {{ ad.car.year }}</p>
+                        <p>Цена: {{ ad.price }}р.</p>
+                        <p>Пробег: {{ ad.car.mileage }}км.</p>
+                        <a href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="spinner-border text-primary mt-2 not-visible" role="status" id="spinner">
+            <p class="sr-only">Loading...</p>
+        </div>
+        <div class="load-more__btn mt-3" id="btn">
+            <button type="button" class="btn btn-success">Load More Post</button>
+        </div>
+        <div class="alert alert-danger mt-2 not-visible" role="alert" id='alert'>
+            No more post to load!!
+        </div>
+    </div>
+    {{ total_ads|json_script:"json-total" }}
+    <script>
+        {#var _current_item = $('.card').length;#}
+        {#console.log(_current_item);#}
+        const loadBtn = $('#btn');
+        const spinner = $('#spinner');
+        const total = JSON.parse($('#json-total').text());
+        const alert = $('#alert');
+        const contantContainer = $('.content');
+
+        function loadmorePost() {
+            const _current_item = $('.card').length;
+
+            $.ajax({
+                url: '{% url 'load' %}',
+                type: 'GET',
+                data: {
+                    'total_item': _current_item
+                },
+                beforeSend: function () {
+                    loadBtn.addClass('not-visible');
+                    spinner.removeClass('not-visible');
+                },
+                success: function (response) {
+                    const data = response.ads;
+                    console.log(data);
+                    spinner.addClass('not-visible');
+                    data.forEach(ad => {
+                        const carHTML = ad.car && ad.car.brand && ad.car.model
+                            ? `<h2>${ad.car.brand.name} ${ad.car.model.name}</h2>`
+                            : '<h2>Car Information Not Available</h2>';
+
+                        const imagesHTML = ad.images && Array.isArray(ad.images.all) && ad.images.all.length > 0
+                            ? `<img src="${ad.images.all[0].image.url}" alt="Car Image">`
+                            : `<img src="{% static 'кчау.jpg' %}" alt="Car Image">`;
+
+                        const yearHTML = ad.car && ad.car.year
+                            ? `<p>Год выпуска: ${ad.car.year}</p>`
+                            : '<p>Год выпуска: N/A</p>';
+
+                        const priceHTML = ad.price
+                            ? `<p>Цена: ${ad.price}р.</p>`
+                            : '<p>Цена: N/A</p>';
+
+                        const mileageHTML = ad.car && ad.car.mileage
+                            ? `<p>Пробег: ${ad.car.mileage}км.</p>`
+                            : '<p>Пробег: N/A</p>';
+
+                        contantContainer.append(`
             <div class="card">
                 <div class="card-image">
-                    {% if ad.images.all %}
-                        <img src="{{ ad.images.all.0.image.url }}" alt="Car Image">
-                    {% else %}
-                        <img src="{% static 'кчау.jpg' %}" alt="Car Image">
-                    {% endif %}
+                    ${imagesHTML}
                 </div>
                 <div class="card-info">
-                    <h2>{{ ad.car.brand.name }} {{ ad.car.model.name }}</h2>
-                    <p>Год выпуска: {{ ad.car.year }}</p>
-                    <p>Цена: {{ ad.price }}р.</p>
-                    <p>Пробег: {{ ad.car.mileage }}км.</p>
-                    <a href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a>
+                    ${carHTML}
+                    ${yearHTML}
+                    ${priceHTML}
+                    ${mileageHTML}
+                    {# <a href="{% url 'carinfo' ad_id=ad.id %}">Подробнее</a> #}
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            </div>`
+                        );
+                    });
+                    if (_current_item == total) {
+                        alert.removeClass('not-visible');
+                    } else {
+                        loadBtn.removeClass('not-visible');
+                    }
+                },
+
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+
+        loadBtn.on('click', () => {
+            loadmorePost();
+        });
+
+    </script>
     </body>
 {% endblock content %}

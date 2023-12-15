@@ -97,7 +97,6 @@ document.addEventListener('click', function(event) {
     }
 });
 
-
 function clearFields() {
     document.getElementById('selectedBrandBtn').value = '';
     document.getElementById('selectedModelBtn').value = '';

@@ -3,18 +3,29 @@ from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from cars.models import Brand, Model, Engine, Gearbox, Suspension, Car, Ad, Favorites, Auction, Bid
 from users.models import CustomUser
+from django.http import JsonResponse
 
 
 def get_cars(request):
-    ads = Ad.objects.filter(status='True')
+    ads = Ad.objects.filter(status='True')[0:1]
+    total_ads = Ad.objects.count()
     favorite_ads = []
 
     if request.user.is_authenticated:
         user = CustomUser.objects.get(pk=request.user.id)
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
     context = {'ads': ads,
+               'total_ads': total_ads,
                'favorite_ads': favorite_ads}
     return render(request, 'index.html', context)
+
+
+def load_more(request):
+    total_item = int(request.GET.get('total_item'))
+    limit = 1
+    ads = list(Ad.objects.filter(status='True').values()[total_item:total_item + limit])
+    data = {'ads': ads}
+    return JsonResponse(data)
 
 
 def buy_cars(request):
@@ -94,7 +105,66 @@ def auction(request):
     date_string = date.strftime("%Y-%m-%dT%H:%M")
     parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
     auctions = Auction.objects.filter(end_date__gt=parsed_date)
-    context = {'auctions': auctions}
+    brand_name = ''
+    model_name = ''
+    start_price = ''
+    end_price = ''
+    start_year = ''
+    end_year = ''
+    start_mileage = ''
+    end_mileage = ''
+    if request.method == 'POST':
+        brand_name = request.POST.get('selected_brand_name')
+        model_name = request.POST.get('selected_model_name')
+        start_price = request.POST.get('start_price')
+        end_price = request.POST.get('end_price')
+        start_year = request.POST.get('start_year')
+        end_year = request.POST.get('end_year')
+        start_mileage = request.POST.get('start_mileage')
+        end_mileage = request.POST.get('end_mileage')
+
+        filter_params = {}
+
+        if brand_name:
+            filter_params['car__brand__name'] = brand_name
+
+        if model_name:
+            filter_params['car__model__name'] = model_name
+
+        if start_price:
+            filter_params['price__gte'] = start_price
+
+        if end_price:
+            filter_params['price__lte'] = end_price
+
+        if start_year:
+            filter_params['car__year__gte'] = start_year
+
+        if end_year:
+            filter_params['car__year__lte'] = end_year
+
+        if start_mileage:
+            filter_params['car__mileage__gte'] = start_mileage
+
+        if end_mileage:
+            filter_params['car__mileage__lte'] = end_mileage
+
+        if filter_params:
+            auctions = Auction.objects.filter(**filter_params)
+
+    brands = Brand.objects.all()
+    models = Model.objects.all()
+    context = {'auctions': auctions,
+               'brands': brands,
+               'models': models,
+               'brand_name': brand_name,
+               'model_name': model_name,
+               'start_price': start_price,
+               'end_price': end_price,
+               'start_year': start_year,
+               'end_year': end_year,
+               'start_mileage': start_mileage,
+               'end_mileage': end_mileage}
     return render(request, 'auction.html', context)
 
 

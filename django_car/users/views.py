@@ -108,7 +108,6 @@ class ProfileView(UpdateView):
 
 
 def LoginPage(request):
-    """Login function"""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -124,7 +123,6 @@ def LoginPage(request):
 
 
 def LogoutPage(request):
-    """Logout function"""
     logout(request)
     return redirect('index')
 
