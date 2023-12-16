@@ -86,8 +86,8 @@
                                 <label>Введите сумму ставки:</label>
                                 <input type="number" name="bid" value="{{ bid }}">
                                 <button type="submit">Сделать ставку</button>
-                                {% if error_bid %}
-                                    <span style="color: #c00000; margin-left: 20px">Ошибка: {{ error_bid }}</span>
+                                {% if error_current_bid %}
+                                    <p style="color: #c00000;">Ошибка: {{ error_current_bid }}</p>
                                 {% endif %}
                             {% else %}
                                 <p>Дата начала аукциона: {{ auction.start_date }}</p>

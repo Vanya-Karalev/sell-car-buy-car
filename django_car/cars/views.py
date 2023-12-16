@@ -203,7 +203,7 @@ def car_info_auction(request, auction_id):
     if request.method == 'POST':
         current_bid = request.POST.get('bid')
         user = request.user
-        if current_bid == '' or current_bid < 1 or current_bid < max_bid or current_bid < auction.start_price:
+        if current_bid == '' or int(current_bid) < 1 or int(current_bid) < int(max_bid) or int(current_bid) < int(auction.start_price):
             error_current_bid = 'Укажите верную ставку'
             values = {'auction': auction,
                       'max_bid': max_bid,

@@ -339,11 +339,12 @@ def my_favorite_ads(request):
 
 def my_auctions(request):
     user = CustomUser.objects.get(pk=request.user.id)
-    date = datetime.now() + timedelta(hours=3)
+    date = datetime.now()
     date_string = date.strftime("%Y-%m-%dT%H:%M")
     parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
-    bid = Bid.objects.filter(user=user).last()
-    auctions = Auction.objects.filter(end_date__lt=parsed_date, bid=bid)
+
+    auctions = Auction.objects.filter(end_date__lt=parsed_date, bid__user=user)
+
     context = {'auctions': auctions}
     return render(request, 'myauctions.html', context)
 
