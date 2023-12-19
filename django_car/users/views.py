@@ -115,10 +115,14 @@ class SignUpView(CreateView):
             data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone, 'password': password1}
             response = requests.post(api_url, data=data)
             if response.status_code == 201:
+                user_data = response.json().get('user')
+
+                # Manually set the user associated with the token
+                user = CustomUser.objects.get(username=user_data['username'])
                 token = response.json().get('token')
                 # Сохранение токена в сессии Django
                 self.request.session['token'] = token
-
+                login(self.request, user)
                 return redirect('index')
 
             # Обработка ошибок при сохранении через API
@@ -194,6 +198,13 @@ def LoginPage(request):
 
         if response.status_code == 200:
             token = response.json().get('token')
+            user_data = response.json().get('user')
+
+            # Manually set the user associated with the token
+            user = CustomUser.objects.get(username=user_data['username'])
+            request.user = user
+            print(request.user)
+            login(request, user)
             # Сохранение токена в сессии Django
             request.session['token'] = token
             return redirect('index')

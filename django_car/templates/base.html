@@ -23,7 +23,7 @@
             <a href="{% url 'buycar' %}">Объявления</a>
             <a href="{% url 'auction' %}">Аукционы</a>
             <a href="{% url 'aboutus' %}">О нас</a>
-            {% if not request.user.is_authenticated %}
+            {% if not request.session.token %}
                 <a href="{% url 'signin' %}">Вход</a>
                 <a href="{% url 'signup' %}">Регистрация</a>
             {% else %}
