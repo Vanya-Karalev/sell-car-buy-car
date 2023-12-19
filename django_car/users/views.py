@@ -112,7 +112,7 @@ class SignUpView(CreateView):
             return render(self.request, 'signup.html', values)
         else:
             api_url = 'http://127.0.0.1:8000/api/signup'
-            data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone}
+            data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone, 'password': password1}
             response = requests.post(api_url, data=data)
             if response.status_code == 201:
                 token = response.json().get('token')
@@ -194,10 +194,8 @@ def LoginPage(request):
 
         if response.status_code == 200:
             token = response.json().get('token')
-
             # Сохранение токена в сессии Django
             request.session['token'] = token
-
             return redirect('index')
 
     return render(request, 'signin.html')
