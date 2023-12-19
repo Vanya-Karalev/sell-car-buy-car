@@ -84,12 +84,12 @@ class SignUpView(CreateView):
         error_phone = ''
         error_password = ''
         if (email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
-        or not re.match(r'^[a-zA-Z0-9]$', username) or first_name == '' or not first_name.isalpha() or phone == ''
+        or not re.match(r'^[a-zA-Z0-9]+$', username) or first_name == '' or not first_name.isalpha() or phone == ''
         or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone) or password1 != password2
         or CustomUser.objects.filter(username=username).exists()):
             if CustomUser.objects.filter(username=username).exists():
                 error_username = 'Такой пользователь уже существует'
-            if not re.match(r'^[a-zA-Z0-9]$', username):
+            if not re.match(r'^[a-zA-Z0-9]+$', username):
                 error_username = 'Укажите верный username'
             if email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
                 error_email = 'Укажите верную почту'
@@ -111,12 +111,19 @@ class SignUpView(CreateView):
                       }
             return render(self.request, 'signup.html', values)
         else:
-            # api_url = 'http://127.0.0.1:8000/api/signup'
-            # data = {'username': username, 'password': password}
-            # response = requests.post(api_url, data=data)
-            user = form.save()
-            login(self.request, self.object)
-        return super().form_valid(form)
+            api_url = 'http://127.0.0.1:8000/api/signup'
+            data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone}
+            response = requests.post(api_url, data=data)
+            if response.status_code == 201:
+                token = response.json().get('token')
+                # Сохранение токена в сессии Django
+                self.request.session['token'] = token
+
+                return redirect('index')
+
+            # Обработка ошибок при сохранении через API
+            values = {'error_api': 'Failed to create user via API'}
+            return render(self.request, 'signup.html', values)
 
 
 class ProfileView(UpdateView):
