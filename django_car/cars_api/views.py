@@ -6,12 +6,14 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import (CustomUserSerializer, AuctionSerializer, AdSerializer, BrandSerializer, ModelSerializer,
-                          EngineSerializer, GearboxSerializer, SuspensionSerializer, CarSerializer, ImageSerializer)
+                          EngineSerializer, GearboxSerializer, SuspensionSerializer, CarSerializer, ImageSerializer,
+                          FavoritesSerializer, CarsSerializer)
 from django.views.decorators.csrf import csrf_exempt
 from users.models import CustomUser
-from cars.models import Ad, Auction, Favorites, Image, Car, Bid
+from cars.models import Ad, Auction, Favorites, Image, Car, Bid, Model, Brand, Gearbox, Suspension, Engine
 from django.shortcuts import get_object_or_404
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 @api_view(['POST'])
@@ -104,23 +106,20 @@ def all_auctions(request):
 @permission_classes([IsAuthenticated])
 def get_favorite_ads(request):
     user = request.user
-    favorite_ads_ids = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
-    ads = Ad.objects.filter(id__in=favorite_ads_ids)
+    favorite_ads = Favorites.objects.filter(user=user)
+    ad_ids = favorite_ads.values_list('ad', flat=True)
+    ads = Ad.objects.filter(id__in=ad_ids)
+    serializer = AdSerializer(ads, many=True)
+    return Response({'favorite_ads': serializer.data})
 
-    ad_list = []
-    for ad in ads:
-        ad_dict = {
-            'id': ad.id,
-            'brand': ad.car.brand.name,
-            'model': ad.car.model.name,
-            'year': ad.car.year,
-            'price': ad.price,
-            'mileage': ad.car.mileage,
-            'image_url': ad.images.first().image.url if ad.images.first() else None,
-        }
-        ad_list.append(ad_dict)
 
-    return Response({'favorite_ads': ad_list})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_favorite_id(request):
+    user = request.user
+    favorite_ads = Favorites.objects.filter(user=user)
+    ad_ids = favorite_ads.values_list('ad', flat=True)
+    return Response({'favorite_ad_ids': ad_ids})
 
 
 @api_view(['GET'])
@@ -128,6 +127,20 @@ def get_ad_by_id(request, ad_id):
     ad = get_object_or_404(Ad, id=ad_id)
     serializer = AdSerializer(ad)
     return Response({'ad': serializer.data})
+
+
+@api_view(['GET'])
+def get_models(request, brand_id):
+    models = get_object_or_404(Model, id=brand_id)
+    serializer = ModelSerializer(models)
+    return Response({'models': serializer.data})
+
+
+@api_view(['GET'])
+def get_brands(request):
+    brands = get_object_or_404(Brand)
+    serializer = ModelSerializer(brands)
+    return Response({'brands': serializer.data})
 
 
 @api_view(['GET'])
@@ -140,42 +153,75 @@ def get_auction_by_id(request, auction_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_ad(request):
-    data = request.data
-    brand_serializer = BrandSerializer(data=data['brand'])
-    brand_serializer.is_valid(raise_exception=True)
-    brand = brand_serializer.save()
+    try:
+        data = request.data
+        brand_name = data.get('brand')['selected_brand_name']
+        model_name = data.get('model')['selected_model_name']
 
-    model_serializer = ModelSerializer(data=data['model'])
-    model_serializer.is_valid(raise_exception=True)
-    model = model_serializer.save(brand=brand)
+        mileage = data.get('car')['mileage']
+        color = data.get('car')['color']
+        bodytype = data.get('car')['body_type']
+        vin = data.get('car')['vin']
 
-    engine_serializer = EngineSerializer(data=data['engine'])
-    engine_serializer.is_valid(raise_exception=True)
-    engine = engine_serializer.save()
+        enginetype = data.get('engine')['type']
+        horsepower = data.get('engine')['horse_power']
+        capacity = data.get('engine')['capacity']
+        torque = data.get('engine')['torque']
+        fuelconsuption = data.get('engine')['fuel_consuption']
 
-    gearbox_serializer = GearboxSerializer(data=data['gearbox'])
-    gearbox_serializer.is_valid(raise_exception=True)
-    gearbox = gearbox_serializer.save()
+        year = data.get('car')['year']
+        suspensiontype = data.get('suspension')['type']
+        clearance = data.get('suspension')['clearance']
 
-    suspension_serializer = SuspensionSerializer(data=data['suspension'])
-    suspension_serializer.is_valid(raise_exception=True)
-    suspension = suspension_serializer.save()
+        gearboxtype = data.get('gearbox')['type']
+        gearnumber = data.get('gearbox')['gear_number']
 
-    car_serializer = CarSerializer(data=data['car'])
-    car_serializer.is_valid(raise_exception=True)
-    car = car_serializer.save(brand=brand, model=model, engines=[engine], gearboxes=[gearbox], suspensions=[suspension])
+        price = data.get('price')
+        description = data.get('description')
 
-    ad_serializer = AdSerializer(data=data)
-    ad_serializer.is_valid(raise_exception=True)
-    ad = ad_serializer.save(user=request.user, car=car)
+        images = data.get('blob')
 
-    for image_data in data.get('images', []):
-        image_serializer = ImageSerializer(data=image_data)
-        image_serializer.is_valid(raise_exception=True)
-        image_instance = image_serializer.save()
-        ad.images.add(image_instance)
+        # Step 1: Retrieve or create related instances
+        brand, created = Brand.objects.get_or_create(name=brand_name)
+        model, created = Model.objects.get_or_create(name=model_name, brand=brand)
+        engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
+                                                       torque=torque, fuel_consuption=fuelconsuption)
+        gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
+        suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
+        user = request.user
 
-    return Response(AdSerializer(ad).data, status=status.HTTP_201_CREATED)
+        # Step 2: Create a new Car instance
+        car, created = Car.objects.get_or_create(
+            brand=brand,
+            model=model,
+            mileage=mileage,
+            body_type=bodytype,
+            year=year,
+            color=color,
+            vin=vin,
+        )
+        car.engines.add(engine)
+        car.gearboxes.add(gearbox)
+        car.suspensions.add(suspension)
+
+        # Step 3: Create a new Ad instance
+        ad, created = Ad.objects.get_or_create(
+            user=user,
+            car=car,
+            price=price,
+            description=description,
+        )
+
+        # Step 4: Add images to the Ad instance
+        for image in images:
+            image_instance = Image.objects.create(blob=image['image'])
+            ad.images.add(image_instance)
+
+        return Response(AdSerializer(ad).data, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])
@@ -287,7 +333,10 @@ def place_bid(request, auction_id):
 
     if current_bid is not None and current_bid > auction.start_price:
         # Создание новой ставки
-        bid = Bid.objects.create(user=user, amount=current_bid)
+        date = datetime.now()
+        date_string = date.strftime("%Y-%m-%dT%H:%M")
+        parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
+        bid = Bid.objects.create(user=user, amount=current_bid, date=parsed_date)
         auction.bid = bid
         auction.save()
         message = 'Bid placed successfully'

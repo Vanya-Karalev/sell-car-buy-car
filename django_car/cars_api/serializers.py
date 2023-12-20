@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from users.models import CustomUser
-from cars.models import Ad, Auction, Favorites, Image, Car, Brand, Model, Engine, Gearbox, Suspension
+from cars.models import Ad, Auction, Favorites, Image, Car, Brand, Model, Engine, Gearbox, Suspension, Bid
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -12,6 +12,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
+        fields = '__all__'
+
+
+class BidSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bid
         fields = '__all__'
 
 
@@ -70,6 +76,7 @@ class AdSerializer(serializers.ModelSerializer):
 
 
 class AuctionSerializer(serializers.ModelSerializer):
+    bid = BidSerializer()
     images = ImageSerializer(many=True)
     car = CarSerializer()
     user = CustomUserSerializer()
@@ -79,11 +86,16 @@ class AuctionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class FavoritesSerializer(serializers.ModelSerializer):
-#     user = CustomUserSerializer(read_only=True)
-#     ad = AdSerializer(many=True, read_only=True)
-#
-#     class Meta:
-#         model = Favorites
-#         fields = ['id', 'user', 'ad']
+class FavoritesSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer(read_only=True)
+    ad = AdSerializer(many=True, read_only=True)
 
+    class Meta:
+        model = Favorites
+        fields = ['id', 'user', 'ad']
+
+
+class CarsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = ['brand', 'model', 'mileage', 'body_type', 'year', 'color', 'vin', 'engines', 'gearboxes', 'suspensions']

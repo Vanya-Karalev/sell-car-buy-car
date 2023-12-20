@@ -80,6 +80,7 @@ class Car(models.Model):
 
 class Image(models.Model):
     image = models.FileField(upload_to="images/", null=True)
+    blob = models.CharField(db_column='Blob', blank=True, null=True)
 
     class Meta:
         db_table = 'Image'

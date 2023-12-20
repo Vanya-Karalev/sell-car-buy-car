@@ -34,7 +34,7 @@ class SignUpView(CreateView):
         error_phone = ''
         error_password = ''
         if (email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
-        or not re.match(r'^[a-zA-Z0-9]$', username) or first_name == '' or not first_name.isalpha() or phone == ''
+        or not re.match(r'^[a-zA-Z0-9]+$', username) or first_name == '' or not first_name.isalpha() or phone == ''
         or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone) or password1 != password2
         or CustomUser.objects.filter(username=username).exists()):
             if CustomUser.objects.filter(username=username).exists():
@@ -297,7 +297,7 @@ def create_ad(request):
             or int(mileage) < 1 or int(mileage) > 1500000 or vin == '' or len(vin) != 17 or horsepower == ''
             or int(horsepower) < 1 or int(horsepower) > 2000) or torque == '' or int(torque) < 1 or int(torque) > 2000
             or year == '' or int(year) < 1900 or int(year) > 2024 or gearnumber == '' or int(gearnumber) < 1
-            or int(gearnumber) > 10 or price == '' or int(price) < 1):
+            or int(gearnumber) > 10 or price == '' or int(price) < 1 or not re.match(r'^[A-Z0-9]+$', vin)):
             error_brand_name = ''
             error_model_name = ''
             error_mileage = ''
@@ -314,8 +314,8 @@ def create_ad(request):
                 brand_name = ''
             if mileage == '' or int(mileage) < 1 or int(mileage) > 1500000:
                 error_mileage = 'Укажите верный пробег'
-            if vin == '' or len(vin) != 17:
-                error_vin = 'Укажите верный vin номер (17 цифр)'
+            if vin == '' or len(vin) != 17 or not re.match(r'^[A-Z0-9]+$', vin):
+                error_vin = 'Укажите верный vin номер (17 цифр и букв)'
             if horsepower == '' or int(horsepower) < 1 or int(horsepower) > 1200000:
                 error_horsepower = 'Укажите верные лошадиные силы'
             if torque == '' or int(torque) < 1 or int(torque) > 2000:
@@ -460,7 +460,7 @@ def my_favorite_ads(request):
 
 def my_auctions(request):
     user = CustomUser.objects.get(pk=request.user.id)
-    date = datetime.now()
+    date = datetime.now() + timedelta(hours=3)
     date_string = date.strftime("%Y-%m-%dT%H:%M")
     parsed_date = timezone.datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
 
@@ -575,11 +575,26 @@ def create_auction(request):
         except:
             error_end_date = 'Укажите верную дату конца аукциона'
 
+        try:
+            if end_date_string == '' or start_date_string == '' or end_date <= start_date:
+                error_start_date = 'Укажите верную дату начала аукциона'
+                error_end_date = 'Укажите верную дату конца аукциона'
+            else:
+                start_date = timezone.datetime.strptime(start_date_string, "%Y-%m-%dT%H:%M")
+                end_date = timezone.datetime.strptime(end_date_string, "%Y-%m-%dT%H:%M")
+                if end_date <= start_date:
+                    error_start_date = 'Укажите верную дату начала аукциона'
+                    error_end_date = 'Укажите верную дату конца аукциона'
+        except:
+            error_start_date = 'Укажите верную дату начала аукциона'
+            error_end_date = 'Укажите верную дату конца аукциона'
+
         if ((brand_name == '' or model_name == '' or not Model.objects.filter(name=model_name).exists() or mileage == ''
-             or int(mileage) < 1 or int(mileage) > 1500000 or vin == '' or len(vin) != 17 or horsepower == ''
-             or int(horsepower) < 1 or int(horsepower) > 2000) or torque == '' or int(torque) < 1 or int(torque) > 2000
-                or year == '' or int(year) < 1900 or int(year) > 2024 or gearnumber == '' or int(gearnumber) < 1
-                or int(gearnumber) > 10 or start_price == '' or int(start_price) < 1 or end_date <= start_date):
+        or int(mileage) < 1 or int(mileage) > 1500000 or vin == '' or len(vin) != 17 or horsepower == ''
+        or int(horsepower) < 1 or int(horsepower) > 2000) or torque == '' or int(torque) < 1 or int(torque) > 2000
+        or year == '' or int(year) < 1900 or int(year) > 2024 or gearnumber == '' or int(gearnumber) < 1
+        or int(gearnumber) > 10 or start_price == '' or int(start_price) < 1
+        or not re.match(r'^[A-Z0-9]+$', vin)):
             error_brand_name = ''
             error_model_name = ''
             error_mileage = ''
@@ -597,8 +612,8 @@ def create_auction(request):
                 brand_name = ''
             if mileage == '' or int(mileage) < 1 or int(mileage) > 1500000:
                 error_mileage = 'Укажите верный пробег'
-            if vin == '' or len(vin) != 17:
-                error_vin = 'Укажите верный vin номер (17 цифр)'
+            if vin == '' or len(vin) != 17 or not re.match(r'^[A-Z0-9]+$', vin):
+                error_vin = 'Укажите верный vin номер (17 цифр и букв)'
             if horsepower == '' or int(horsepower) < 1 or int(horsepower) > 1200000:
                 error_horsepower = 'Укажите верные лошадиные силы'
             if torque == '' or int(torque) < 1 or int(torque) > 2000:
@@ -609,8 +624,6 @@ def create_auction(request):
                 error_gearnumber = 'Укажите верное кол-во передач'
             if start_price == '' or int(start_price) < 1:
                 error_start_price = 'Укажите верную стоимость автомобиля'
-            if end_date <= start_date:
-                error_end_date = 'Укажите верную дату конца аукциона'
 
             values = {'brands': brands,
                       'models': models,
@@ -647,42 +660,42 @@ def create_auction(request):
                       }
             return render(request, 'createauction.html', values)
         else:
-            # Step 1: Retrieve or create related instances
-            brand, created = Brand.objects.get_or_create(name=brand_name)
-            model, created = Model.objects.get_or_create(name=model_name, brand=brand)
-            engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
-                                                           torque=torque, fuel_consuption=fuelconsuption)
-            gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
-            suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
-            user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
-
-            # Step 2: Create a new Car instance
-            car = Car.objects.create(
-                brand=brand,
-                model=model,
-                mileage=mileage,
-                body_type=bodytype,
-                year=year,
-                color=color,
-                vin=vin,
-            )
-            car.engines.add(engine)
-            car.gearboxes.add(gearbox)
-            car.suspensions.add(suspension)
-
-            # Step 3: Create a new Ad instance
-            auction = Auction.objects.create(
-                user=user,
-                car=car,
-                start_price=start_price,
-                start_date=start_date,
-                end_date=end_date,
-                description=description,
-            )
-
-            for image in images:
-                image_instance = Image.objects.create(image=image)
-                auction.images.add(image_instance)
+            # # Step 1: Retrieve or create related instances
+            # brand, created = Brand.objects.get_or_create(name=brand_name)
+            # model, created = Model.objects.get_or_create(name=model_name, brand=brand)
+            # engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
+            #                                                torque=torque, fuel_consuption=fuelconsuption)
+            # gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
+            # suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
+            # user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
+            #
+            # # Step 2: Create a new Car instance
+            # car = Car.objects.create(
+            #     brand=brand,
+            #     model=model,
+            #     mileage=mileage,
+            #     body_type=bodytype,
+            #     year=year,
+            #     color=color,
+            #     vin=vin,
+            # )
+            # car.engines.add(engine)
+            # car.gearboxes.add(gearbox)
+            # car.suspensions.add(suspension)
+            #
+            # # Step 3: Create a new Ad instance
+            # auction = Auction.objects.create(
+            #     user=user,
+            #     car=car,
+            #     start_price=start_price,
+            #     start_date=start_date,
+            #     end_date=end_date,
+            #     description=description,
+            # )
+            #
+            # for image in images:
+            #     image_instance = Image.objects.create(image=image)
+            #     auction.images.add(image_instance)
 
             return redirect('index')
 

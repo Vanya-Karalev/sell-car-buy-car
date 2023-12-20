@@ -33,6 +33,55 @@ def get_cars(request):
     # if response.status_code == 200:
     #     print(response.json().get('favorite_ads'))
 
+    api_url = 'http://127.0.0.1:8000/api/create-ad'
+    token = request.session.get('token', None)
+
+    data = {
+        'brand': {
+            'selected_brand_name': 'Audi',
+        },
+        'model': {
+            'selected_model_name': 'Q4',
+        },
+        'engine': {
+            'type': 'Petrol',
+            'horse_power': 200,
+            'capacity': 2.5,
+            'torque': 180,
+            'fuel_consuption': 8.5,
+        },
+        'gearbox': {
+            'type': 'Automatic',
+            'gear_number': 6,
+        },
+        'suspension': {
+            'type': 'Independent',
+            'clearance': 150,
+        },
+        'car': {
+            'mileage': 80000,
+            'body_type': 'Sedan',
+            'year': 2022,
+            'color': 'Blue',
+            'vin': '12345678901234567',
+        },
+        'price': 25000,
+        'description': 'Well-maintained car for sale!',
+        'blob': [
+            {'image': 'str1'},
+            {'image': 'str2'},
+            {'image': 'str3'},
+        ]
+    }
+
+    headers = {'Authorization': f'Token {token}', 'Content-Type': 'application/json'}
+    response = requests.post(api_url, headers=headers, json=data)
+
+    if response.status_code == 201:
+        print('ok')
+    else:
+        print('error')
+
     # api_url = 'http://127.0.0.1:8000/api/get-ad/17'
     # response = requests.get(api_url)
     # if response.status_code == 200:
