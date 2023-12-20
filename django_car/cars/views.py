@@ -33,10 +33,15 @@ def get_cars(request):
     # if response.status_code == 200:
     #     print(response.json().get('favorite_ads'))
 
-    api_url = 'http://127.0.0.1:8000/api/get-ad/17'
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        print(response.json().get('ad'))
+    # api_url = 'http://127.0.0.1:8000/api/get-ad/17'
+    # response = requests.get(api_url)
+    # if response.status_code == 200:
+    #     print(response.json().get('ad'))
+
+    # api_url = 'http://127.0.0.1:8000/api/all-auctions'
+    # response = requests.get(api_url)
+    # if response.status_code == 200:
+    #     print(response.json().get('auctions'))
 
     context = {'ads': ads,
                'total_ads': total_ads,

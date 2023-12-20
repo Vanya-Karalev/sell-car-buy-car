@@ -9,22 +9,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'first_name', 'phone', 'password']
 
 
-class AdSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ad
-        fields = '__all__'
-
-
-class AuctionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Auction
-        fields = '__all__'
-
-
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ['id', 'image']
+        fields = '__all__'
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -34,11 +22,11 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class ModelSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer(read_only=True)
+    brand = BrandSerializer()
 
     class Meta:
         model = Model
-        fields = ['id', 'brand', 'name']
+        fields = '__all__'
 
 
 class EngineSerializer(serializers.ModelSerializer):
@@ -60,22 +48,42 @@ class SuspensionSerializer(serializers.ModelSerializer):
 
 
 class CarSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer(read_only=True)
-    model = ModelSerializer(read_only=True)
-    engines = EngineSerializer(many=True, read_only=True)
-    gearboxes = GearboxSerializer(many=True, read_only=True)
-    suspensions = SuspensionSerializer(many=True, read_only=True)
+    brand = BrandSerializer()
+    model = ModelSerializer()
+    engines = EngineSerializer(many=True)
+    gearboxes = GearboxSerializer(many=True)
+    suspensions = SuspensionSerializer(many=True)
 
     class Meta:
         model = Car
-        fields = ['id', 'brand', 'model', 'engines', 'gearboxes', 'suspensions', 'mileage', 'body_type', 'year', 'color', 'vin']
+        fields = '__all__'
 
 
-class AdImgSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=True)
-    car = CarSerializer(read_only=True)
-    user = CustomUserSerializer(read_only=True)
+class AdSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    car = CarSerializer()
+    user = CustomUserSerializer()
 
     class Meta:
         model = Ad
-        fields = ['id', 'price', 'description', 'status', 'user', 'car', 'images']
+        fields = '__all__'
+
+
+class AuctionSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+    car = CarSerializer()
+    user = CustomUserSerializer()
+
+    class Meta:
+        model = Auction
+        fields = '__all__'
+
+
+# class FavoritesSerializer(serializers.ModelSerializer):
+#     user = CustomUserSerializer(read_only=True)
+#     ad = AdSerializer(many=True, read_only=True)
+#
+#     class Meta:
+#         model = Favorites
+#         fields = ['id', 'user', 'ad']
+

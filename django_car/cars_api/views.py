@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import CustomUserSerializer, AdSerializer, AuctionSerializer, AdImgSerializer
+from .serializers import (CustomUserSerializer, AuctionSerializer, AdSerializer, BrandSerializer, ModelSerializer,
+                          EngineSerializer, GearboxSerializer, SuspensionSerializer, CarSerializer, ImageSerializer)
 from django.views.decorators.csrf import csrf_exempt
 from users.models import CustomUser
 from cars.models import Ad, Auction, Favorites
@@ -60,6 +61,22 @@ def signup_user(request):
     return Response({'error': 'Invalid method'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+
+    if request.method == 'PUT':
+        serializer = CustomUserSerializer(instance=user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Profile updated successfully', 'user': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({'error': 'Invalid method'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 def ads_status(request):
     status = request.GET.get('status', 'True')
@@ -80,7 +97,6 @@ def all_auctions(request):
     auctions = Auction.objects.all()
     serializer = AuctionSerializer(auctions, many=True)
     return Response({'auctions': serializer.data})
-    # return Response({'auctions': list(auctions)})
 
 
 @api_view(['GET'])
@@ -109,5 +125,54 @@ def get_favorite_ads(request):
 @api_view(['GET'])
 def get_ad_by_id(request, ad_id):
     ad = get_object_or_404(Ad, id=ad_id)
-    serializer = AdImgSerializer(ad)
+    serializer = AdSerializer(ad)
     return Response({'ad': serializer.data})
+
+
+@api_view(['GET'])
+def get_auction_by_id(request, auction_id):
+    auction = get_object_or_404(Auction, id=auction_id)
+    serializer = AuctionSerializer(auction)
+    return Response({'auction': serializer.data})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_ad(request):
+    data = request.data
+    brand_serializer = BrandSerializer(data=data['brand'])
+    brand_serializer.is_valid(raise_exception=True)
+    brand = brand_serializer.save()
+
+    model_serializer = ModelSerializer(data=data['model'])
+    model_serializer.is_valid(raise_exception=True)
+    model = model_serializer.save(brand=brand)
+
+    engine_serializer = EngineSerializer(data=data['engine'])
+    engine_serializer.is_valid(raise_exception=True)
+    engine = engine_serializer.save()
+
+    gearbox_serializer = GearboxSerializer(data=data['gearbox'])
+    gearbox_serializer.is_valid(raise_exception=True)
+    gearbox = gearbox_serializer.save()
+
+    suspension_serializer = SuspensionSerializer(data=data['suspension'])
+    suspension_serializer.is_valid(raise_exception=True)
+    suspension = suspension_serializer.save()
+
+    car_serializer = CarSerializer(data=data['car'])
+    car_serializer.is_valid(raise_exception=True)
+    car = car_serializer.save(brand=brand, model=model, engines=[engine], gearboxes=[gearbox], suspensions=[suspension])
+
+    ad_serializer = AdSerializer(data=data)
+    ad_serializer.is_valid(raise_exception=True)
+    ad = ad_serializer.save(user=request.user, car=car)
+
+    for image_data in data.get('images', []):
+        image_serializer = ImageSerializer(data=image_data)
+        image_serializer.is_valid(raise_exception=True)
+        image_instance = image_serializer.save()
+        ad.images.add(image_instance)
+
+    return Response(AdSerializer(ad).data, status=status.HTTP_201_CREATED)
+
