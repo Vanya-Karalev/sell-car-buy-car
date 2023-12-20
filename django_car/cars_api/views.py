@@ -9,8 +9,9 @@ from .serializers import (CustomUserSerializer, AuctionSerializer, AdSerializer,
                           EngineSerializer, GearboxSerializer, SuspensionSerializer, CarSerializer, ImageSerializer)
 from django.views.decorators.csrf import csrf_exempt
 from users.models import CustomUser
-from cars.models import Ad, Auction, Favorites
+from cars.models import Ad, Auction, Favorites, Image, Car, Bid
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 
 @api_view(['POST'])
@@ -176,3 +177,120 @@ def create_ad(request):
 
     return Response(AdSerializer(ad).data, status=status.HTTP_201_CREATED)
 
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_ad(request, ad_id):
+    try:
+        ad = Ad.objects.get(pk=ad_id, user=request.user)
+    except Ad.DoesNotExist:
+        return Response({'error': 'Ad not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = AdSerializer(instance=ad, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+
+            # Update images
+            if 'images' in request.data:
+                ad.images.clear()
+                for image_data in request.data['images']:
+                    image_instance = Image.objects.create(image=image_data)
+                    ad.images.add(image_instance)
+
+            return Response({'message': 'Ad updated successfully', 'ad': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({'error': 'Invalid method'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_auction(request):
+    data = request.data
+
+    brand_serializer = BrandSerializer(data=data['brand'])
+    brand_serializer.is_valid(raise_exception=True)
+    brand = brand_serializer.save()
+
+    model_serializer = ModelSerializer(data=data['model'])
+    model_serializer.is_valid(raise_exception=True)
+    model = model_serializer.save(brand=brand)
+
+    engine_serializer = EngineSerializer(data=data['engine'])
+    engine_serializer.is_valid(raise_exception=True)
+    engine = engine_serializer.save()
+
+    gearbox_serializer = GearboxSerializer(data=data['gearbox'])
+    gearbox_serializer.is_valid(raise_exception=True)
+    gearbox = gearbox_serializer.save()
+
+    suspension_serializer = SuspensionSerializer(data=data['suspension'])
+    suspension_serializer.is_valid(raise_exception=True)
+    suspension = suspension_serializer.save()
+
+    car_serializer = CarSerializer(data=data['car'])
+    car_serializer.is_valid(raise_exception=True)
+    car = car_serializer.save(brand=brand, model=model, engines=[engine], gearboxes=[gearbox], suspensions=[suspension])
+
+    auction_serializer = AuctionSerializer(data=data)
+    auction_serializer.is_valid(raise_exception=True)
+    auction = auction_serializer.save(user=request.user, car=car)
+
+    for image_data in data.get('images', []):
+        image_serializer = ImageSerializer(data=image_data)
+        image_serializer.is_valid(raise_exception=True)
+        image_instance = image_serializer.save()
+        auction.images.add(image_instance)
+
+    return Response(AuctionSerializer(auction).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_ad(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    car = get_object_or_404(Car, id=ad.car.id)
+
+    # Удаление связанных объектов
+    ad.delete()
+    car.delete()
+
+    return Response({'message': 'Ad and Car deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def toggle_favorite(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    user = request.user
+    message = None
+    if request.method == 'POST':
+        # Добавление в избранное
+        Favorites.objects.get_or_create(user=user, ad=ad)
+        message = 'Ad added to favorites'
+    elif request.method == 'DELETE':
+        # Удаление из избранного
+        Favorites.objects.filter(user=user, ad=ad).delete()
+        message = 'Ad removed from favorites'
+
+    return Response({'message': message}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def place_bid(request, auction_id):
+    auction = get_object_or_404(Auction, id=auction_id)
+    user = request.user
+    current_bid = request.data.get('amount')
+
+    if current_bid is not None and current_bid > auction.start_price:
+        # Создание новой ставки
+        bid = Bid.objects.create(user=user, amount=current_bid)
+        auction.bid = bid
+        auction.save()
+        message = 'Bid placed successfully'
+        return Response({'message': message}, status=status.HTTP_201_CREATED)
+
+    return Response({'error': 'Invalid bid amount'}, status=status.HTTP_400_BAD_REQUEST)
