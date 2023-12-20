@@ -6,9 +6,18 @@ from users.models import CustomUser
 from django.http import JsonResponse
 from django.db.models import F
 from django.db.models import OuterRef, Subquery
+import requests
 
 
 def get_cars(request):
+    # api_url = 'http://127.0.0.1:8000/api/ads'
+    # data = {'status': 'True'}
+    # response = requests.get(api_url, data=data)
+    # ads = None
+    # if response.status_code == 200:
+    #     ads = response.json().get('ads')
+    #     print(ads)
+
     ads = Ad.objects.filter(status='True')[0:1]
     total_ads = Ad.objects.count()
     favorite_ads = []
@@ -16,6 +25,15 @@ def get_cars(request):
     if request.user.is_authenticated:
         user = CustomUser.objects.get(pk=request.user.id)
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
+
+    api_url = 'http://127.0.0.1:8000/api/get-favorite'
+    headers = {'Authorization': f'Token {request.session["token"]}'}
+    response = requests.get(api_url, headers=headers)
+    print(response.status_code)
+    if response.status_code == 200:
+        print(response.json().get('favorite_ads'))
+    print('123')
+
     context = {'ads': ads,
                'total_ads': total_ads,
                'favorite_ads': favorite_ads}
@@ -212,11 +230,7 @@ def car_info_auction(request, auction_id):
                       'error_current_bid': error_current_bid}
             return render(request, 'auctioncar.html', values)
         else:
-            bid = Bid.objects.create(
-            user=user,
-            amount=current_bid,
-            date=parsed_date
-            )
+            bid = Bid.objects.create(user=user, amount=current_bid, date=parsed_date)
             auction.bid = bid
             auction.save()
             return redirect('carinfoauc', auction_id=auction_id)

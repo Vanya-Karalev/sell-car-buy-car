@@ -14,58 +14,6 @@ import re
 import requests
 
 
-# class SignUpView(CreateView):
-#     form_class = CustomUserCreationForm
-#     success_url = reverse_lazy('index')
-#     template_name = 'signup.html'
-#
-#     def form_valid(self, form):
-#         username = form.cleaned_data.get('username')
-#         email = form.cleaned_data.get('email')
-#         first_name = form.cleaned_data.get('first_name')
-#         phone = form.cleaned_data.get('phone')
-#         password1 = form.cleaned_data.get('password1')
-#         password2 = form.cleaned_data.get('password2')
-#         print(password1)
-#         print(password2)
-#         error_username = ''
-#         error_email = ''
-#         error_first_name = ''
-#         error_phone = ''
-#         error_password = ''
-#         if (email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
-#         or not re.match(r'^[a-zA-Z0-9]$', username) or first_name == '' or not first_name.isalpha() or phone == ''
-#         or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone) or password1 != password2
-#         or CustomUser.objects.filter(username=username).exists()):
-#             if CustomUser.objects.filter(username=username).exists():
-#                 error_username = 'Такой пользователь уже существует'
-#             if not re.match(r'^[a-zA-Z0-9]$', username):
-#                 error_username = 'Укажите верный username'
-#             if email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
-#                 error_email = 'Укажите верную почту'
-#             if first_name == '' or not first_name.isalpha():
-#                 error_first_name = 'Укажите верное имя'
-#             if phone == '' or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone):
-#                 error_phone = 'Укажите верный номер телефона'
-#             if password1 != password2:
-#                 error_password = 'Пароли не совпадают'
-#             values = {'email': email,
-#                       'first_name': first_name,
-#                       'username': username,
-#                       'phone': phone,
-#                       'error_email': error_email,
-#                       'error_first_name': error_first_name,
-#                       'error_phone': error_phone,
-#                       'error_username': error_username,
-#                       'error_password': error_password,
-#                       }
-#             return render(self.request, 'signup.html', values)
-#         else:
-#             user = form.save()
-#             login(self.request, self.object)
-#         return super().form_valid(form)
-
-
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('index')
@@ -78,18 +26,20 @@ class SignUpView(CreateView):
         phone = form.cleaned_data.get('phone')
         password1 = form.cleaned_data.get('password1')
         password2 = form.cleaned_data.get('password2')
+        print(password1)
+        print(password2)
         error_username = ''
         error_email = ''
         error_first_name = ''
         error_phone = ''
         error_password = ''
         if (email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
-        or not re.match(r'^[a-zA-Z0-9]+$', username) or first_name == '' or not first_name.isalpha() or phone == ''
+        or not re.match(r'^[a-zA-Z0-9]$', username) or first_name == '' or not first_name.isalpha() or phone == ''
         or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone) or password1 != password2
         or CustomUser.objects.filter(username=username).exists()):
             if CustomUser.objects.filter(username=username).exists():
                 error_username = 'Такой пользователь уже существует'
-            if not re.match(r'^[a-zA-Z0-9]+$', username):
+            if not re.match(r'^[a-zA-Z0-9]$', username):
                 error_username = 'Укажите верный username'
             if email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
                 error_email = 'Укажите верную почту'
@@ -111,23 +61,86 @@ class SignUpView(CreateView):
                       }
             return render(self.request, 'signup.html', values)
         else:
-            api_url = 'http://127.0.0.1:8000/api/signup'
-            data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone, 'password': password1}
-            response = requests.post(api_url, data=data)
-            if response.status_code == 201:
-                user_data = response.json().get('user')
+            user = form.save()
+            login(self.request, self.object)
+        return super().form_valid(form)
 
-                # Manually set the user associated with the token
-                user = CustomUser.objects.get(username=user_data['username'])
-                token = response.json().get('token')
-                # Сохранение токена в сессии Django
-                self.request.session['token'] = token
-                login(self.request, user)
-                return redirect('index')
 
-            # Обработка ошибок при сохранении через API
-            values = {'error_api': 'Failed to create user via API'}
-            return render(self.request, 'signup.html', values)
+# class SignUpView(CreateView):
+#     form_class = CustomUserCreationForm
+#     success_url = reverse_lazy('index')
+#     template_name = 'signup.html'
+#
+#     def form_valid(self, form):
+#         username = form.cleaned_data.get('username')
+#         email = form.cleaned_data.get('email')
+#         first_name = form.cleaned_data.get('first_name')
+#         phone = form.cleaned_data.get('phone')
+#         password1 = form.cleaned_data.get('password1')
+#         password2 = form.cleaned_data.get('password2')
+#         error_username = ''
+#         error_email = ''
+#         error_first_name = ''
+#         error_phone = ''
+#         error_password = ''
+#         if (email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
+#         or not re.match(r'^[a-zA-Z0-9]+$', username) or first_name == '' or not first_name.isalpha() or phone == ''
+#         or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone) or password1 != password2
+#         or CustomUser.objects.filter(username=username).exists()):
+#             if CustomUser.objects.filter(username=username).exists():
+#                 error_username = 'Такой пользователь уже существует'
+#             if not re.match(r'^[a-zA-Z0-9]+$', username):
+#                 error_username = 'Укажите верный username'
+#             if email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+#                 error_email = 'Укажите верную почту'
+#             if first_name == '' or not first_name.isalpha():
+#                 error_first_name = 'Укажите верное имя'
+#             if phone == '' or not re.compile(r'^\+375(25|29|33|44)\d{7}$').match(phone):
+#                 error_phone = 'Укажите верный номер телефона'
+#             if password1 != password2:
+#                 error_password = 'Пароли не совпадают'
+#             values = {'email': email,
+#                       'first_name': first_name,
+#                       'username': username,
+#                       'phone': phone,
+#                       'error_email': error_email,
+#                       'error_first_name': error_first_name,
+#                       'error_phone': error_phone,
+#                       'error_username': error_username,
+#                       'error_password': error_password,
+#                       }
+#             return render(self.request, 'signup.html', values)
+#         else:
+#             api_url = 'http://127.0.0.1:8000/api/signup'
+#             data = {'username': username, 'email': email, 'first_name': first_name, 'phone': phone, 'password': password1}
+#             response = requests.post(api_url, data=data)
+#             if response.status_code == 201:
+#                 api_url_login = 'http://127.0.0.1:8000/api/login'
+#                 login_data = {'username': username, 'password': password1}
+#                 login_response = requests.post(api_url_login, data=login_data)
+#                 if login_response.status_code == 200:
+#                     token = response.json().get('token')
+#                     user_data = response.json().get('user')
+#                     user = CustomUser.objects.get(username=user_data['username'])
+#                     self.request.user = user
+#                     print(self.request.user)
+#                     login(self.request, user)
+#                     # Сохранение токена в сессии Django
+#                     self.request.session['token'] = token
+#                     return redirect('index')
+#                 # user_data = response.json().get('user')
+#                 #
+#                 # # Manually set the user associated with the token
+#                 # user = CustomUser.objects.get(username=user_data['username'])
+#                 # token = response.json().get('token')
+#                 # # Сохранение токена в сессии Django
+#                 # self.request.session['token'] = token
+#                 # login(self.request, user)
+#                 # return redirect('index')
+#
+#             # Обработка ошибок при сохранении через API
+#             values = {'error_api': 'Failed to create user via API'}
+#             return render(self.request, 'signup.html', values)
 
 
 class ProfileView(UpdateView):
@@ -199,9 +212,8 @@ def LoginPage(request):
         if response.status_code == 200:
             token = response.json().get('token')
             user_data = response.json().get('user')
-
-            # Manually set the user associated with the token
             user = CustomUser.objects.get(username=user_data['username'])
+            print(request.user)
             request.user = user
             print(request.user)
             login(request, user)
@@ -229,6 +241,7 @@ def LogoutPage(request):
         if response.status_code == 200:
             # Очистка токена из сессии Django
             request.session.pop('token', None)
+            logout(request)
             return redirect('index')
 
     return HttpResponse(status=response.status_code if response else 500)
