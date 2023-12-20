@@ -26,13 +26,17 @@ def get_cars(request):
         user = CustomUser.objects.get(pk=request.user.id)
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
 
-    api_url = 'http://127.0.0.1:8000/api/get-favorite'
-    headers = {'Authorization': f'Token {request.session["token"]}'}
-    response = requests.get(api_url, headers=headers)
-    print(response.status_code)
+    # api_url = 'http://127.0.0.1:8000/api/get-favorite'
+    # token = request.session.get('token', None)
+    # headers = {'Authorization': f'Token {token}'}
+    # response = requests.get(api_url, headers=headers)
+    # if response.status_code == 200:
+    #     print(response.json().get('favorite_ads'))
+
+    api_url = 'http://127.0.0.1:8000/api/get-ad/17'
+    response = requests.get(api_url)
     if response.status_code == 200:
-        print(response.json().get('favorite_ads'))
-    print('123')
+        print(response.json().get('ad'))
 
     context = {'ads': ads,
                'total_ads': total_ads,

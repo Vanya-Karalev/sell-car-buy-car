@@ -232,6 +232,7 @@ def LoginPage(request):
 def LogoutPage(request):
     token = request.session.get('token', None)
     response = None
+    logout(request)
     if token:
         api_url = 'http://127.0.0.1:8000/api/logout'
         headers = {'Authorization': f'Token {token}'}
@@ -241,7 +242,7 @@ def LogoutPage(request):
         if response.status_code == 200:
             # Очистка токена из сессии Django
             request.session.pop('token', None)
-            logout(request)
+
             return redirect('index')
 
     return HttpResponse(status=response.status_code if response else 500)

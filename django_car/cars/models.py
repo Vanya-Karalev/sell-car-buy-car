@@ -24,7 +24,7 @@ class Model(models.Model):
 
 
 class Engine(models.Model):
-    type = models.CharField(db_column='Type')
+    type = models.CharField(db_column='Type', max_length=255)
     horse_power = models.IntegerField(db_column='HorsePower')
     capacity = models.FloatField(db_column='Capacity')
     torque = models.IntegerField(db_column='Torque')

@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import CustomUserSerializer, AdSerializer, AuctionSerializer
+from .serializers import CustomUserSerializer, AdSerializer, AuctionSerializer, AdImgSerializer
 from django.views.decorators.csrf import csrf_exempt
 from users.models import CustomUser
 from cars.models import Ad, Auction, Favorites
@@ -105,3 +105,9 @@ def get_favorite_ads(request):
 
     return Response({'favorite_ads': ad_list})
 
+
+@api_view(['GET'])
+def get_ad_by_id(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    serializer = AdImgSerializer(ad)
+    return Response({'ad': serializer.data})
