@@ -26,8 +26,6 @@ class SignUpView(CreateView):
         phone = form.cleaned_data.get('phone')
         password1 = form.cleaned_data.get('password1')
         password2 = form.cleaned_data.get('password2')
-        print(password1)
-        print(password2)
         error_username = ''
         error_email = ''
         error_first_name = ''
@@ -39,7 +37,7 @@ class SignUpView(CreateView):
         or CustomUser.objects.filter(username=username).exists()):
             if CustomUser.objects.filter(username=username).exists():
                 error_username = 'Такой пользователь уже существует'
-            if not re.match(r'^[a-zA-Z0-9]$', username):
+            if not re.match(r'^[a-zA-Z0-9]+$', username):
                 error_username = 'Укажите верный username'
             if email == '' or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
                 error_email = 'Укажите верную почту'
@@ -62,7 +60,7 @@ class SignUpView(CreateView):
             return render(self.request, 'signup.html', values)
         else:
             user = form.save()
-            login(self.request, self.object)
+            login(self.request, user)
         return super().form_valid(form)
 
 
@@ -185,67 +183,66 @@ class ProfileView(UpdateView):
         return super().form_valid(form)
 
 
-# def LoginPage(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#
-#         user = authenticate(request, username=username, password=password)
-#
-#         if user is not None:
-#             login(request, user)
-#             return redirect('index')
-#
-#     context = {}
-#     return render(request, 'signin.html', context)
-
-
 def LoginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        api_url = 'http://127.0.0.1:8000/api/login'
-        data = {'username': username, 'password': password}
-        response = requests.post(api_url, data=data)
+        user = authenticate(request, username=username, password=password)
 
-        if response.status_code == 200:
-            token = response.json().get('token')
-            user_data = response.json().get('user')
-            user = CustomUser.objects.get(username=user_data['username'])
-            print(request.user)
-            request.user = user
-            print(request.user)
+        if user is not None:
             login(request, user)
-            # Сохранение токена в сессии Django
-            request.session['token'] = token
             return redirect('index')
 
     return render(request, 'signin.html')
 
 
-# def LogoutPage(request):
-#     logout(request)
-#     return redirect('index')
+# def LoginPage(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#
+#         api_url = 'http://127.0.0.1:8000/api/login'
+#         data = {'username': username, 'password': password}
+#         response = requests.post(api_url, data=data)
+#
+#         if response.status_code == 200:
+#             token = response.json().get('token')
+#             user_data = response.json().get('user')
+#             user = CustomUser.objects.get(username=user_data['username'])
+#             print(request.user)
+#             request.user = user
+#             print(request.user)
+#             login(request, user)
+#             # Сохранение токена в сессии Django
+#             request.session['token'] = token
+#             return redirect('index')
+#
+#     return render(request, 'signin.html')
 
 
 def LogoutPage(request):
-    token = request.session.get('token', None)
-    response = None
     logout(request)
-    if token:
-        api_url = 'http://127.0.0.1:8000/api/logout'
-        headers = {'Authorization': f'Token {token}'}
+    return redirect('index')
 
-        response = requests.post(api_url, headers=headers)
 
-        if response.status_code == 200:
-            # Очистка токена из сессии Django
-            request.session.pop('token', None)
-
-            return redirect('index')
-
-    return HttpResponse(status=response.status_code if response else 500)
+# def LogoutPage(request):
+#     token = request.session.get('token', None)
+#     response = None
+#     logout(request)
+#     if token:
+#         api_url = 'http://127.0.0.1:8000/api/logout'
+#         headers = {'Authorization': f'Token {token}'}
+#
+#         response = requests.post(api_url, headers=headers)
+#
+#         if response.status_code == 200:
+#             # Очистка токена из сессии Django
+#             request.session.pop('token', None)
+#
+#             return redirect('index')
+#
+#     return HttpResponse(status=response.status_code if response else 500)
 
 
 def create_ad(request):
@@ -661,41 +658,41 @@ def create_auction(request):
             return render(request, 'createauction.html', values)
         else:
             # # Step 1: Retrieve or create related instances
-            # brand, created = Brand.objects.get_or_create(name=brand_name)
-            # model, created = Model.objects.get_or_create(name=model_name, brand=brand)
-            # engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
-            #                                                torque=torque, fuel_consuption=fuelconsuption)
-            # gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
-            # suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
-            # user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
-            #
-            # # Step 2: Create a new Car instance
-            # car = Car.objects.create(
-            #     brand=brand,
-            #     model=model,
-            #     mileage=mileage,
-            #     body_type=bodytype,
-            #     year=year,
-            #     color=color,
-            #     vin=vin,
-            # )
-            # car.engines.add(engine)
-            # car.gearboxes.add(gearbox)
-            # car.suspensions.add(suspension)
-            #
-            # # Step 3: Create a new Ad instance
-            # auction = Auction.objects.create(
-            #     user=user,
-            #     car=car,
-            #     start_price=start_price,
-            #     start_date=start_date,
-            #     end_date=end_date,
-            #     description=description,
-            # )
-            #
-            # for image in images:
-            #     image_instance = Image.objects.create(image=image)
-            #     auction.images.add(image_instance)
+            brand, created = Brand.objects.get_or_create(name=brand_name)
+            model, created = Model.objects.get_or_create(name=model_name, brand=brand)
+            engine, created = Engine.objects.get_or_create(type=enginetype, horse_power=horsepower, capacity=capacity,
+                                                           torque=torque, fuel_consuption=fuelconsuption)
+            gearbox, created = Gearbox.objects.get_or_create(type=gearboxtype, gear_number=gearnumber)
+            suspension, created = Suspension.objects.get_or_create(type=suspensiontype, clearance=clearance)
+            user = CustomUser.objects.get(pk=request.user.id)  # Assuming the user is logged in
+
+            # Step 2: Create a new Car instance
+            car = Car.objects.create(
+                brand=brand,
+                model=model,
+                mileage=mileage,
+                body_type=bodytype,
+                year=year,
+                color=color,
+                vin=vin,
+            )
+            car.engines.add(engine)
+            car.gearboxes.add(gearbox)
+            car.suspensions.add(suspension)
+
+            # Step 3: Create a new Ad instance
+            auction = Auction.objects.create(
+                user=user,
+                car=car,
+                start_price=start_price,
+                start_date=start_date,
+                end_date=end_date,
+                description=description,
+            )
+
+            for image in images:
+                image_instance = Image.objects.create(image=image)
+                auction.images.add(image_instance)
 
             return redirect('index')
 

@@ -16,6 +16,7 @@
 
             <div class="card-image">
                 <div class="slides">
+
                     {% if ad.images.all %}
                         {% for img in ad.images.all %}
                             <img src="{{ img.image.url }}" alt="Car Image">

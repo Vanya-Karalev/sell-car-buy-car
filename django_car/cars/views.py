@@ -10,14 +10,6 @@ import requests
 
 
 def get_cars(request):
-    # api_url = 'http://127.0.0.1:8000/api/ads'
-    # data = {'status': 'True'}
-    # response = requests.get(api_url, data=data)
-    # ads = None
-    # if response.status_code == 200:
-    #     ads = response.json().get('ads')
-    #     print(ads)
-
     ads = Ad.objects.filter(status='True')[0:1]
     total_ads = Ad.objects.count()
     favorite_ads = []
@@ -25,72 +17,6 @@ def get_cars(request):
     if request.user.is_authenticated:
         user = CustomUser.objects.get(pk=request.user.id)
         favorite_ads = Favorites.objects.filter(user=user).values_list('ad__id', flat=True)
-
-    # api_url = 'http://127.0.0.1:8000/api/get-favorite'
-    # token = request.session.get('token', None)
-    # headers = {'Authorization': f'Token {token}'}
-    # response = requests.get(api_url, headers=headers)
-    # if response.status_code == 200:
-    #     print(response.json().get('favorite_ads'))
-
-    api_url = 'http://127.0.0.1:8000/api/create-ad'
-    token = request.session.get('token', None)
-
-    data = {
-        'brand': {
-            'selected_brand_name': 'Audi',
-        },
-        'model': {
-            'selected_model_name': 'Q4',
-        },
-        'engine': {
-            'type': 'Petrol',
-            'horse_power': 200,
-            'capacity': 2.5,
-            'torque': 180,
-            'fuel_consuption': 8.5,
-        },
-        'gearbox': {
-            'type': 'Automatic',
-            'gear_number': 6,
-        },
-        'suspension': {
-            'type': 'Independent',
-            'clearance': 150,
-        },
-        'car': {
-            'mileage': 80000,
-            'body_type': 'Sedan',
-            'year': 2022,
-            'color': 'Blue',
-            'vin': '12345678901234567',
-        },
-        'price': 25000,
-        'description': 'Well-maintained car for sale!',
-        'blob': [
-            {'image': 'str1'},
-            {'image': 'str2'},
-            {'image': 'str3'},
-        ]
-    }
-
-    headers = {'Authorization': f'Token {token}', 'Content-Type': 'application/json'}
-    response = requests.post(api_url, headers=headers, json=data)
-
-    if response.status_code == 201:
-        print('ok')
-    else:
-        print('error')
-
-    # api_url = 'http://127.0.0.1:8000/api/get-ad/17'
-    # response = requests.get(api_url)
-    # if response.status_code == 200:
-    #     print(response.json().get('ad'))
-
-    # api_url = 'http://127.0.0.1:8000/api/all-auctions'
-    # response = requests.get(api_url)
-    # if response.status_code == 200:
-    #     print(response.json().get('auctions'))
 
     context = {'ads': ads,
                'total_ads': total_ads,
@@ -279,7 +205,7 @@ def car_info_auction(request, auction_id):
     if request.method == 'POST':
         current_bid = request.POST.get('bid')
         user = request.user
-        if current_bid == '' or int(current_bid) < 1 or int(current_bid) < int(max_bid) or int(current_bid) < int(auction.start_price):
+        if current_bid == '' or int(current_bid) < 1 or int(current_bid) <= int(max_bid) or int(current_bid) < int(auction.start_price):
             error_current_bid = 'Укажите верную ставку'
             values = {'auction': auction,
                       'max_bid': max_bid,

@@ -75,15 +75,17 @@ class Car(models.Model):
         db_table = 'Car'
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class Image(models.Model):
     image = models.FileField(upload_to="images/", null=True)
-    blob = models.CharField(db_column='Blob', blank=True, null=True)
 
     class Meta:
         db_table = 'Image'
+
+    def __str__(self):
+        return str(self.image)
 
 
 class Ad(models.Model):
@@ -98,7 +100,7 @@ class Ad(models.Model):
         db_table = 'Ad'
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class Favorites(models.Model):
@@ -120,6 +122,9 @@ class Bid(models.Model):
     class Meta:
         db_table = 'Bid'
 
+    def __str__(self):
+        return str(self.pk)
+
 
 class Auction(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, db_column='UserID')
@@ -135,4 +140,4 @@ class Auction(models.Model):
         db_table = 'Auction'
 
     def __str__(self):
-        return self.start_date
+        return str(self.pk)
